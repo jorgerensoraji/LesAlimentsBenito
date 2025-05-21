@@ -6,11 +6,17 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://127.0.0.1:5500' // Cambia si usas otro frontend
+  origin: 'http://127.0.0.1:5500' // Ajusta según dónde esté tu frontend
 }));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -18,7 +24,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'deisyrestore@gmail.com',
-    pass: 'dalrvzbqrqnotqfc' // recuerda usar contraseña de aplicación
+    pass: 'dalrvzbqrqnotqfc'
   }
 });
 
@@ -40,7 +46,7 @@ app.post('/upload-pdf', upload.single('file'), (req, res) => {
 
   const mailOptions = {
     from: 'deisyrestore@gmail.com',
-    to: ['jorgerensoraji@hotmail.com', emailCliente], // empresa + cliente
+    to: ['jorgerensoraji@hotmail.com', emailCliente],
     subject: `Nueva Orden de Compra - ${nombreOrden}`,
     text: `Nueva orden de compra recibida.
 
@@ -64,7 +70,6 @@ Adjuntamos la orden de compra en PDF.`,
     }
     console.log('Correo enviado:', info.response);
 
-    // Borrar el archivo
     fs.unlink(filePath, (err) => {
       if (err) console.error('Error al borrar archivo:', err);
     });
@@ -73,10 +78,10 @@ Adjuntamos la orden de compra en PDF.`,
   });
 });
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
