@@ -9,7 +9,7 @@
     "build": "mkdir -p public && cp ./index.html public/"
   },
   "keywords": ["Node.js", "Express", "Nodemailer", "Multer", "PDF", "Órdenes de compra"],
-  "author": "Tu Nombre <tu.email@example.com>",
+  "author": "Tu Nombre <deisyrestore@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
