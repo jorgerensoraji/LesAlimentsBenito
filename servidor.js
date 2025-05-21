@@ -85,3 +85,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
