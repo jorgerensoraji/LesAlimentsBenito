@@ -81,12 +81,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
-
-
-const fs = require('fs');
-const path = require('path');
-
-app.get('/debug', (req, res) => {
-  const files = fs.readdirSync(path.join(__dirname));
-  res.json({ files });
-});
