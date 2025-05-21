@@ -44,11 +44,17 @@ app.post('/upload-pdf', upload.single('file'), (req, res) => {
     return res.status(400).json({ success: false, message: 'No se recibió email del cliente' });
   }
 
-  const mailOptions = {
+ const mailOptions = {
     from: 'deisyrestore@gmail.com',
-    to: ['jorgerensoraji@hotmail.com', emailCliente],
+    to: ['jorgerensoraji@hotmail.com', emailCliente], // empresa + cliente
     subject: `Nueva Orden de Compra - ${nombreOrden}`,
-    text: `Nueva orden de compra recibida.\n\nNombre del cliente: ${nombreCliente}\nCorreo: ${emailCliente}\nDirección de envío: ${direccionEnvio}\n\nAdjuntamos la orden de compra en PDF.`,
+    text: `Nueva orden de compra recibida.
+
+Nombre del cliente: ${nombreCliente}
+Correo: ${emailCliente}
+Dirección de envío: ${direccionEnvio}
+
+Adjuntamos la orden de compra en PDF.`,
     attachments: [
       {
         filename: `${nombreOrden}.pdf`,
