@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Les Aliments Benito</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <div class="header-flex">
+      <img src="image/beni.png" alt="Logo" class="logo" />
+      <h1>Place Your Order</h1>
+      <img id="logoPDF2" src="image/beni1.png" alt="Logo" class="logo" />
+      <h1>Phone: 514 723 2378</h1>
+      <img id="logoPDF" src="image/beni3.png" alt="Logo" class="logo" />
+    </div>
+
+    <div class="container">
+      <!-- Columna izquierda -->
+      <div class="left-panel">
+        <input id="searchBar" type="text" placeholder="Buscar producto..." oninput="buscarProducto()" autocomplete="off" />
+        <div id="productoLista"></div>
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="right-panel">
+        <h2>Productos seleccionados</h2>
+        <div id="productosSeleccionados"></div>
+
+        <div class="form-group">
+          <label for="clienteNombre">Nombre completo</label>
+          <input id="clienteNombre" type="text" placeholder="Nombre completo" />
+        </div>
+        <div class="form-group">
+          <label for="clienteEmail">Correo electrónico</label>
+          <input id="clienteEmail" type="email" placeholder="Correo electrónico" />
+        </div>
+        <div class="form-group">
+          <label for="direccionEnvio">Dirección de envío (si es distinta)</label>
+          <textarea id="direccionEnvio" placeholder="Dirección de envío (opcional)"></textarea>
+        </div>
+
+        <button onclick="generarYEnviarPDF()">Enviar pedido</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Librerías -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("UzUXeU3cpKBweU8wB"); // Tu clave pública de EmailJS
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+  <script defer src="script.js"></script>
+</body>
+</html>
