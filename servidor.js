@@ -5,15 +5,11 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: ['http://127.0.0.1:5500', 'https://orders-api-ly0t.onrender.com/'] // Ajusta según tus URLs de frontend
+  origin: ['http://127.0.0.1:5500', 'https://orders-api-ly0t.onrender.com'] // Ajusta según tus URLs de frontend
 }));
 
 app.use(express.json());
@@ -52,13 +48,7 @@ app.post('/upload-pdf', upload.single('file'), (req, res) => {
     from: 'deisyrestore@gmail.com',
     to: ['jorgerensoraji@hotmail.com', emailCliente],
     subject: `Nueva Orden de Compra - ${nombreOrden}`,
-    text: `Nueva orden de compra recibida.
-
-Nombre del cliente: ${nombreCliente}
-Correo: ${emailCliente}
-Dirección de envío: ${direccionEnvio}
-
-Adjuntamos la orden de compra en PDF.`,
+    text: `Nueva orden de compra recibida.\n\nNombre del cliente: ${nombreCliente}\nCorreo: ${emailCliente}\nDirección de envío: ${direccionEnvio}\n\nAdjuntamos la orden de compra en PDF.`,
     attachments: [
       {
         filename: `${nombreOrden}.pdf`,
@@ -74,6 +64,7 @@ Adjuntamos la orden de compra en PDF.`,
     }
     console.log('Correo enviado:', info.response);
 
+    // Borrar archivo tras enviar
     fs.unlink(filePath, (err) => {
       if (err) console.error('Error al borrar archivo:', err);
     });
@@ -82,10 +73,11 @@ Adjuntamos la orden de compra en PDF.`,
   });
 });
 
+// Ruta para servir index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
-})
+});
