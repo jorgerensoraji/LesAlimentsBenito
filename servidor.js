@@ -76,3 +76,7 @@ Adjuntamos la orden de compra en PDF.`,
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
