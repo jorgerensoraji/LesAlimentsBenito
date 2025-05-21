@@ -267,9 +267,10 @@ const data = productosSeleccionados.map(p => [
 
   try {
     const response = await fetch("http://127.0.0.1:3000/upload-pdf", {
-      method: "POST",
-      body: formData
+     method: "POST",
+     body: formData
     });
+
 
     if (!response.ok) {
       throw new Error("Error al subir PDF al servidor");
