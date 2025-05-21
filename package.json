@@ -1,21 +1,28 @@
 {
   "name": "orden-de-compra",
   "version": "1.0.0",
-  "main": "script - Copy.js",
+  "description": "Aplicación para gestionar órdenes de compra con generación de PDFs y envío por correo",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "mkdir -p public && cp ./index.html public/"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["Node.js", "Express", "Nodemailer", "Multer", "PDF", "Órdenes de compra"],
+  "author": "Tu Nombre <tu.email@example.com>",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "form-data": "^4.0.2",
     "multer": "^1.4.5-lts.2",
+    "nodemailer": "^7.0.3",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^7.0.3"
+    "form-data": "^4.0.2"
   },
-  "description": ""
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
