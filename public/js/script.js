@@ -223,6 +223,15 @@ async function generarYEnviarPDF() {
   y += 5;
 
 
+  document.getElementById('clienteNombre').value = "";
+  document.getElementById('clienteEmail').value = "";
+  document.getElementById('direccionEnvio').value = "";
+  document.getElementById('productosSeleccionados').innerHTML = "";
+
+
+
+
+
 
 
 
@@ -284,7 +293,8 @@ const data = productosSeleccionados.map(p => [
       throw new Error(data.message || "Error desconocido del servidor");
     }
 
-    alert("Ocurrió un error al enviar el pedido: " + error.message);
+    alert("Pedido enviado exitosamente. Revisa tu correo y el de la empresa.");
+
   } catch (error) {
     console.error("Error al enviar PDF:", error);
     alert("Pedido enviado exitosamente. Revisa tu correo y el de la empresa.");
