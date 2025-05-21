@@ -266,10 +266,11 @@ const data = productosSeleccionados.map(p => [
   formData.append('nombreOrden', nombreOrden);
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/upload-pdf", {
-     method: "POST",
-     body: formData
+    const response = await fetch("https://lesalimentsbenito.onrender.com/upload-pdf", {
+      method: "POST",
+      body: formData
     });
+
 
 
     if (!response.ok) {
