@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://127.0.0.1:5500' // Ajusta según dónde esté tu frontend
+  origin: ['http://127.0.0.1:5500', 'https://tu-front-en-render.onrender.com'] // Ajusta según tus URLs de frontend
 }));
 
 app.use(express.json());
@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'deisyrestore@gmail.com',
-    pass: 'dalrvzbqrqnotqfc'
+    pass: 'dalrvzbqrqnotqfc' // contraseña de app
   }
 });
 
@@ -84,6 +84,4 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
-});
-
-app.use(express.static(path.join(__dirname, 'public')));
+})
