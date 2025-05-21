@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: ['http://127.0.0.1:5500', 'https://orders-api-ly0t.onrender.com'] // Ajusta según tus URLs de frontend
+  origin: ['http://127.0.0.1:5500', 'https://lesalimentsbenito.onrender.com/'] // Ajusta según tus URLs de frontend
 }));
 
 app.use(express.json());
