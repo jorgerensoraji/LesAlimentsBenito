@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
 
 app.post('/upload-pdf', upload.single('file'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ success: false, message: 'No se recibió ningún archivo' });
+    return res.status(400).json({ success: false, message: 'We did not received any file' });
   }
 
   const filePath = path.join(__dirname, req.file.path);
@@ -41,18 +41,18 @@ app.post('/upload-pdf', upload.single('file'), (req, res) => {
   const nombreOrden = req.body.nombreOrden || req.file.originalname;
 
   if (!emailCliente) {
-    return res.status(400).json({ success: false, message: 'No se recibió email del cliente' });
+    return res.status(400).json({ success: false, message: 'We did note recieved customer email' });
   }
 
  const mailOptions = {
     from: 'deisyrestore@gmail.com',
     to: ['jorgerensoraji@hotmail.com', emailCliente], // empresa + cliente
-    subject: `Nueva Orden de Compra - ${nombreOrden}`,
-    text: `Nueva orden de compra recibida.
+    subject: `New Purhcase Order - ${nombreOrden}`,
+    text: `New Order Received.
 
-Nombre del cliente: ${nombreCliente}
-Correo: ${emailCliente}
-Dirección de envío: ${direccionEnvio}
+Customer Name: ${nombreCliente}
+Email: ${emailCliente}
+Delivery address if Different: ${direccionEnvio}
 
 Adjuntamos la orden de compra en PDF.`,
     attachments: [

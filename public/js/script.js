@@ -25,14 +25,14 @@ function mostrarProductos() {
       <div class="detalle-producto">
         <h3>${producto.nombre}</h3>
         <p>${producto.descripcion}</p>
-        <input type="number" min="0.01" step="0.01" placeholder="Cantidad" class="cantidad" />
+        <input type="number" min="0.01" step="0.01" placeholder="Quantity, Quantité" class="cantidad" />
         <select class="unidad">
-          <option value="kg">Kilogramos</option>
-          <option value="lb">Libras</option>
-          <option value="box">Cajas</option>
+          <option value="kg">Kilos</option>
+          <option value="lb">Pounds, Livres</option>
+          <option value="box">Boxes, Boites</option>
         </select>
-        <textarea placeholder="Detalles adicionales" class="detalles"></textarea>
-        <button onclick="seleccionarProducto('${producto.nombre}')">Seleccionar</button>
+        <textarea placeholder="additional details, Informations supplémentaires" class="detalles"></textarea>
+        <button onclick="seleccionarProducto('${producto.nombre}')">Select, Sélectionner</button>
       </div>
     `;
     lista.appendChild(divProducto);
@@ -65,7 +65,7 @@ function seleccionarProducto(nombre) {
   const detalles = detallesInput.value.trim();
 
   if (!cantidad || cantidad <= 0) {
-    alert("Por favor, ingresa una cantidad válida mayor a cero.");
+    alert("Please enter a valid quantity greater than zero, Veuillez saisir une quantité valide supérieure à zéro.");
     return;
   }
 
@@ -75,7 +75,7 @@ function seleccionarProducto(nombre) {
     <p><strong>${producto.nombre}</strong></p>
     <p>${cantidad} ${unidad}</p>
     <p>Detalles: ${detalles || "-"}</p>
-    <button onclick="eliminarProductoSeleccionado(this)">Eliminar</button>
+    <button onclick="eliminarProductoSeleccionado(this)">Delete, Supprimer</button>
     <hr />
   `;
 
@@ -163,17 +163,17 @@ async function generarYEnviarPDF() {
   const direccionEnvio = document.getElementById('direccionEnvio').value.trim();
 
   if (!nombre) {
-    alert("Por favor, ingresa tu nombre completo.");
+    alert("Please enter your business name, Veuillez entrer le nom de votre entreprise.");
     return;
   }
   if (!email) {
-    alert("Por favor, ingresa tu correo electrónico.");
+    alert("Please enter your email address, Veuillez entrer votre adresse e-mail.");
     return;
   }
 
   const productosSeleccionados = obtenerProductosSeleccionados();
   if (productosSeleccionados.length === 0) {
-    alert("Debes seleccionar al menos un producto.");
+    alert("You must select at least one product, Vous devez sélectionner au moins un produit.");
     return;
   }
 
@@ -237,7 +237,7 @@ async function generarYEnviarPDF() {
 
 
   // Construcción de tabla
-const headers = [["Producto", "Cantidad", "Precio"]];
+const headers = [["Product", "Quantity", "Price"]];
 const data = productosSeleccionados.map(p => [
   `${p.nombre}\n${p.cantidad} ${p.unidad}\nDetalles: ${p.detalles}`,
   ""
@@ -293,10 +293,10 @@ const data = productosSeleccionados.map(p => [
       throw new Error(data.message || "Error desconocido del servidor");
     }
 
-    alert("Pedido enviado exitosamente. Revisa tu correo y el de la empresa.");
+    alert("Order sent successfully. Check your email and the company's email.");
 
   } catch (error) {
     console.error("Error al enviar PDF:", error);
-    alert("Pedido enviado exitosamente. Revisa tu correo y el de la empresa.");
+    alert("Order sent successfully. Check your email and the company's email.");
   }
 }

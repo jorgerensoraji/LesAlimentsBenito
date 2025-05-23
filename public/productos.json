@@ -1,37 +1,60 @@
 [
   {
-    "nombre": "Rib Steak AAA",
-    "descripcion": "Carne de res de alta calidad, 100% orgánica.",
-    "imagen": "image/ribAAA.jpg"
+    "nombre": "Shawarma Beef, Boeuf",
+    "descripcion": "The best quality and cut - La meilleure qualité et coupe.",
+    "imagen": "image/shawarmab.jpg"
   },
+  
   {
-    "nombre": "Chicken Breast B/less, Poitrine Dess Poulet ",
-    "descripcion": "Pechuga de pollo fresca, sin hormonas.",
-    "imagen": "image/chickenbreastbnless.jpg"
+    "nombre": "Chicken Breast B/less with skin, Poitrine Dess Poulet avec peau ",
+    "descripcion": "The best quality and cut - La meilleure qualité et coupe." ,
+    "imagen": "image/chickenbreastbnlesswithskin.jpg"
   },
+
   {
-    "nombre": "Whole Lamb MF, Agneau Complete de Lait",
-    "descripcion": "Cordero fresco, criado sin antibióticos.",
-    "imagen": "image/wholelambmf.jpg"
+    "nombre": "Canola Oil, Huile de Canola",
+    "descripcion": "The Best Option, La Meilleure Option",
+    "imagen": "image/Canolaoil.jpg"
   },
+
   {
-    "nombre": "Pork Leg with Bone, Cuisse de Porc avec Os",
-    "descripcion": "Carne de cerdo de alta calidad, 100% orgánica.",
-    "imagen": "image/porklegwithbone.jpg"
+    "nombre": "Pork Butt Sliced, Soc de Pork Dess",
+    "descripcion": "The best quality and cut - La meilleure qualité et coupe.",
+    "imagen": "image/porkbuttsliced.jpg"
   },
+
   {
     "nombre": "whole Chicken Wings, Ailes Poulet Complet",
-    "descripcion": "Alas de pollo frescas, sin hormonas.",
+    "descripcion": "Fresh, the best on the market, Fraîches, les meilleures du marché.",
     "imagen": "image/wholechickenwings.jpg"
   },
+
+  {
+    "nombre": "whole Chicken Wings Cut, Ailes Poulet Coupe",
+    "descripcion": "Fresh, the best on the market, Fraîches, les meilleures du marché.",
+    "imagen": "image/chickenwingscut.jpg"
+  },
+
   {
     "nombre": "Lamb Leg Boneless Aus, Gigot d-Agneau Désossé Aus",
-    "descripcion": "Cordero fresco, criado sin antibióticos.",
+    "descripcion": "Fresh lamb, raised in the best way, Agneau frais, élevé de la meilleure façon.",
     "imagen": "image/lamblegbnlessaus.jpg"
   },
   {
-    "nombre": "Inside Round, Rond intérieur",
-    "descripcion": "Cordero fresco, criado sin antibióticos.",
-    "imagen": "image/insideround.jpg"
+    "nombre": "LOUKANIKO",
+    "descripcion": "The flavors of Greece packed into a hog casing, Les saveurs de la Grèce emballées dans un boyau de porc.",
+    "imagen": "image/LOUKANIKO.jpg"
+  },
+
+  {
+    "nombre": "Pork Cube, Cube de porc",
+    "descripcion": "The best quality and cut - La meilleure qualité et coupe.",
+    "imagen": "image/porkcube.jpg"
+  },
+
+  {
+    "nombre": "Chicken breast in cubes ,Poitrine de poulet en cubes",
+    "descripcion": "Fresh, the best on the market, Fraîches, les meilleures du marché.",
+    "imagen": "image/chickenbreastcube.jpg"
   }
 ]

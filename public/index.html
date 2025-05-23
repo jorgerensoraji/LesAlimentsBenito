@@ -10,38 +10,38 @@
   <main>
     <div class="header-flex">
       <img src="image/beni.png" alt="Logo" class="logo" />
-      <h1>Place Your Order</h1>
+      <h1 class="flashing-title">Place your order</h1>
       <img id="logoPDF2" src="image/beni1.png" alt="Logo" class="logo" />
-      <h1>Phone: 514 723 2378</h1>
+      <h1>Phone: 514 723 2378</h1>  
       <img id="logoPDF" src="image/beni3.png" alt="Logo" class="logo" />
     </div>
 
     <div class="container">
       <!-- Columna izquierda -->
       <div class="left-panel">
-        <input id="searchBar" type="text" placeholder="Buscar producto..." oninput="buscarProducto()" autocomplete="off" />
+        <input id="searchBar" type="text" placeholder="Search product... , Rechercher un produit..." oninput="buscarProducto()" autocomplete="off" />
         <div id="productoLista"></div>
       </div>
 
       <!-- Columna derecha -->
       <div class="right-panel">
-        <h2>Productos seleccionados</h2>
+        <h2>Produits sélectionnés</h2>
         <div id="productosSeleccionados"></div>
 
         <div class="form-group">
-          <label for="clienteNombre">Nombre completo</label>
-          <input id="clienteNombre" type="text" placeholder="Nombre completo" />
+          <label for="clienteNombre">Nom complet de l'entreprise</label>
+          <input id="clienteNombre" type="text" placeholder="Nom complet de l'entreprise" />
         </div>
         <div class="form-group">
-          <label for="clienteEmail">Correo electrónico</label>
-          <input id="clienteEmail" type="email" placeholder="Correo electrónico" />
+          <label for="clienteEmail">Adresse e-mail</label>
+          <input id="clienteEmail" type="email" placeholder="Adresse e-mail" />
         </div>
         <div class="form-group">
-          <label for="direccionEnvio">Dirección de envío (si es distinta)</label>
-          <textarea id="direccionEnvio" placeholder="Dirección de envío (opcional)"></textarea>
+          <label for="direccionEnvio">Adresse de livraison (si différente)</label>
+          <textarea id="direccionEnvio" placeholder="Adresse de livraison (si différente)"></textarea>
         </div>
 
-        <button onclick="generarYEnviarPDF()">Enviar pedido</button>
+        <button onclick="generarYEnviarPDF()">Send order, Envoyer la commande</button>
       </div>
     </div>
   </main>
