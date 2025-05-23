@@ -29,7 +29,7 @@
 }
 
 .flashing-title {
-  animation: flashColor 1.5s infinite;
+  animation: flashColor 2.5s infinite;
   font-weight: bold;
 }
 
@@ -55,6 +55,21 @@
     opacity: 1;
   }
 }
+
+.flashing-title2 {
+  animation: flash 3s infinite;
+  color: #ff0000; /* puedes ajustar el color que prefieras */
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 
 
 
@@ -328,4 +343,73 @@ textarea:focus {
 .producto img:hover {
   object-fit: contain;
   background-color: #fff; /* opcional: para evitar transparencia negra */
+}
+
+
+
+
+
+
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .header-flex {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    gap: 10px;
+    border-radius: 20px;
+  }
+
+  .header-flex h1 {
+    font-size: 22px;
+  }
+
+  .logo {
+    height: 60px;
+    width: auto;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+
+  #productoLista {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .producto {
+    width: 100%;
+  }
+
+  .producto img {
+    height: 180px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px;
+  }
+
+  .right-panel > button {
+    font-size: 16px;
+    padding: 12px;
+  }
 }
