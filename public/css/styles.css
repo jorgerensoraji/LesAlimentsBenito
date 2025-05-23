@@ -6,7 +6,8 @@
   justify-content: center; /* o space-between, según prefieras */
   gap: 15px;
   margin-bottom: 30px;
-  background-color: #e7dccf;
+  background-color: #f5ebcc;
+  border-radius: 5%;
 }
 
 .header-flex .logo {
