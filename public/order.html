@@ -14,8 +14,10 @@
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
       <a href="/" data-i18n="navHome">Home</a>
-      <a href="/account" data-i18n="navAccount">My account</a>
-      <a href="/login" data-i18n="navLogin">Login</a>
+      <a href="/account" class="nav-auth-item" data-auth="customer" data-i18n="navAccount">My account</a>
+      <a href="/admin" class="nav-auth-item" data-auth="admin">Admin</a>
+      <a href="/login" class="nav-auth-item" data-auth="guest" data-i18n="navLogin">Login</a>
+      <button class="nav-auth-item text-button" data-auth="auth" type="button" data-i18n="logoutButton">Logout</button>
       <button class="language-toggle" type="button" data-language-toggle>FR</button>
     </nav>
   </header>
@@ -74,6 +76,6 @@
     </section>
   </main>
 
-  <script src="/js/app.js?v=20260519-3" defer></script>
+  <script src="/js/app.js?v=20260519-4" defer></script>
 </body>
 </html>

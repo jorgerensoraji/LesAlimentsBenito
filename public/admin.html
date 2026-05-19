@@ -13,20 +13,193 @@
       <span>Les Aliments Benito</span>
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
-      <a href="/order" data-i18n="navOrder">Place your order</a>
+      <a href="/" data-i18n="navHome">Home</a>
       <button id="logoutButton" class="text-button" type="button" data-i18n="logoutButton">Logout</button>
       <button class="language-toggle" type="button" data-language-toggle>FR</button>
     </nav>
   </header>
 
-  <main class="admin-shell">
-    <section class="section-heading">
-      <p class="eyebrow" data-i18n="adminEyebrow">Order dashboard</p>
-      <h1 data-i18n="adminTitle">Orders received</h1>
-    </section>
-    <div id="ordersList" class="orders-list"></div>
-  </main>
+  <!-- Admin tabs -->
+  <nav class="admin-tabs" aria-label="Admin sections">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="orders">Orders</button>
+    <button class="tab-btn" data-tab="products">Products</button>
+    <button class="tab-btn" data-tab="customers">Customers</button>
+  </nav>
 
-  <script src="/js/app.js?v=20260519-3" defer></script>
+  <!-- DASHBOARD TAB -->
+  <div id="tab-dashboard" class="tab-panel active">
+    <div class="admin-content">
+      <p class="eyebrow" data-i18n="adminEyebrow">Order dashboard</p>
+      <h1 data-i18n="adminTitle" style="margin-bottom:24px">Overview</h1>
+
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card accent">
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">New (pending)</div>
+          <div class="stat-value" id="statNew">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Month</div>
+          <div class="stat-value" id="statMonth">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Week</div>
+          <div class="stat-value" id="statWeek">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Customers</div>
+          <div class="stat-value" id="statCustomers">—</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start">
+        <div>
+          <h2 style="font-size:18px;margin:0 0 14px">Recent Orders</h2>
+          <div id="dashRecentOrders" class="recent-orders-list"></div>
+        </div>
+        <div>
+          <h2 style="font-size:18px;margin:0 0 14px">Top Products</h2>
+          <ul id="dashTopProducts" class="top-products-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div id="tab-orders" class="tab-panel">
+    <div class="admin-content">
+      <div class="admin-section-header">
+        <h2>All Orders</h2>
+      </div>
+      <div class="admin-filters">
+        <input id="orderSearch" type="search" placeholder="Search company or email…" style="min-width:220px" />
+        <select id="orderStatusFilter">
+          <option value="">All statuses</option>
+          <option value="new">New</option>
+          <option value="processing">Processing</option>
+          <option value="ready">Ready</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn-sm" id="orderFilterBtn">Filter</button>
+      </div>
+      <div class="table-scroll">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Date</th>
+              <th>Company</th>
+              <th>Email</th>
+              <th>Items</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody"></tbody>
+        </table>
+      </div>
+      <p id="ordersTableEmpty" class="form-status" style="display:none;margin-top:16px">No orders found.</p>
+    </div>
+  </div>
+
+  <!-- PRODUCTS TAB -->
+  <div id="tab-products" class="tab-panel">
+    <div class="admin-content">
+      <div class="admin-section-header">
+        <h2>Products</h2>
+        <button class="button primary" id="addProductBtn" style="font-size:14px;min-height:38px;padding:8px 16px">+ Add Product</button>
+      </div>
+      <div id="productsAdminGrid" class="products-admin-grid"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS TAB -->
+  <div id="tab-customers" class="tab-panel">
+    <div class="admin-content">
+      <div class="admin-section-header">
+        <h2>Customers</h2>
+        <span id="customerCount" style="color:var(--muted);font-size:14px"></span>
+      </div>
+      <div class="table-scroll">
+        <table class="customers-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Contact</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Orders</th>
+              <th>Last Order</th>
+              <th>Since</th>
+            </tr>
+          </thead>
+          <tbody id="customersTableBody"></tbody>
+        </table>
+      </div>
+      <p id="customersTableEmpty" class="form-status" style="display:none;margin-top:16px">No customers yet.</p>
+    </div>
+  </div>
+
+  <!-- Product modal -->
+  <div class="modal-overlay hidden" id="productModal">
+    <div class="modal-box">
+      <h2 id="productModalTitle">Add Product</h2>
+      <form class="modal-form" id="productForm" novalidate>
+        <input type="hidden" id="productId" />
+        <div class="form-row">
+          <label>
+            Name (EN) *
+            <input id="pName" type="text" required />
+          </label>
+          <label>
+            Name (FR)
+            <input id="pNameFr" type="text" />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            Category *
+            <select id="pCategory">
+              <option value="Beef">Beef</option>
+              <option value="Chicken">Chicken</option>
+              <option value="Pork">Pork</option>
+              <option value="Lamb">Lamb</option>
+              <option value="Specialty">Specialty</option>
+              <option value="Grocery">Grocery</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+          <label>
+            SKU / Code
+            <input id="pSku" type="text" placeholder="Optional" />
+          </label>
+        </div>
+        <label>
+          Description (EN)
+          <textarea id="pDesc" rows="2"></textarea>
+        </label>
+        <label>
+          Description (FR)
+          <textarea id="pDescFr" rows="2"></textarea>
+        </label>
+        <label>
+          Product Image
+          <input id="pImageFile" type="file" accept="image/*" />
+        </label>
+        <img id="pImagePreview" class="image-upload-preview" alt="Image preview" style="display:none" />
+        <div class="modal-actions">
+          <button class="btn-sm" type="button" id="productModalCancel">Cancel</button>
+          <button class="btn-sm primary" type="submit" id="productModalSave">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/app.js?v=20260519-4" defer></script>
 </body>
 </html>

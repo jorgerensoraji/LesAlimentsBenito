@@ -551,3 +551,650 @@ textarea {
     font-size: 40px;
   }
 }
+
+/* ── Dynamic nav auth items ───────────────────────────────────────────────── */
+
+.nav-auth-item {
+  display: none;
+}
+
+/* ── Status badges ────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-new      { background: #dbeafe; color: #1e40af; }
+.badge-processing { background: #fef3c7; color: #92400e; }
+.badge-ready    { background: #d1fae5; color: #065f46; }
+.badge-delivered { background: #e5e7eb; color: #374151; }
+.badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+/* ── Admin tabs ───────────────────────────────────────────────────────────── */
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 clamp(28px, 5vw, 54px);
+  border-bottom: 2px solid var(--line);
+  background: var(--white);
+  overflow-x: auto;
+}
+
+.tab-btn {
+  padding: 14px 20px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-btn.active {
+  border-bottom-color: var(--red);
+  color: var(--ink);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* ── Stats cards ──────────────────────────────────────────────────────────── */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 24px;
+  box-shadow: 0 2px 8px rgba(52, 31, 22, 0.06);
+}
+
+.stat-card .stat-value {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+  margin: 4px 0 6px;
+}
+
+.stat-card .stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stat-card.accent .stat-value {
+  color: var(--red);
+}
+
+/* ── Admin content sections ───────────────────────────────────────────────── */
+
+.admin-content {
+  padding: clamp(24px, 4vw, 44px) clamp(28px, 5vw, 54px);
+}
+
+.admin-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-section-header h2 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.admin-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.admin-filters input,
+.admin-filters select {
+  width: auto;
+  min-height: 38px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* ── Orders table ─────────────────────────────────────────────────────────── */
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.orders-table th {
+  background: var(--paper);
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+.orders-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.orders-table tr:last-child td {
+  border-bottom: none;
+}
+
+.orders-table tr:hover td {
+  background: #fffaf5;
+}
+
+.order-items-preview {
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 240px;
+}
+
+.status-select {
+  width: auto;
+  min-height: 32px;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* ── Order expandable detail ──────────────────────────────────────────────── */
+
+.order-detail-row td {
+  background: #fffaf5;
+  padding: 0;
+}
+
+.order-detail-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px 14px;
+  font-size: 13px;
+}
+
+.order-detail-inner dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.order-detail-inner dd {
+  margin: 0;
+}
+
+.detail-toggle {
+  background: transparent;
+  border: none;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Product management ───────────────────────────────────────────────────── */
+
+.products-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.product-admin-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(52, 31, 22, 0.06);
+}
+
+.product-admin-card.inactive {
+  opacity: 0.55;
+}
+
+.product-admin-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.product-admin-img img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.product-admin-body {
+  padding: 14px 16px;
+}
+
+.product-admin-body h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.product-admin-body .product-cat {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+.product-admin-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  min-height: 32px;
+  font-size: 13px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+}
+
+.btn-sm.primary {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.btn-sm.danger {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+/* ── Product form modal ───────────────────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(33, 26, 23, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-box {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 28px;
+  width: min(100%, 560px);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(52, 31, 22, 0.25);
+}
+
+.modal-box h2 {
+  font-size: 20px;
+  margin: 0 0 20px;
+}
+
+.modal-form {
+  display: grid;
+  gap: 14px;
+}
+
+.modal-form label {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.modal-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.image-upload-preview {
+  width: 100%;
+  height: 120px;
+  border: 2px dashed var(--line);
+  border-radius: 6px;
+  object-fit: contain;
+  background: var(--paper);
+}
+
+/* ── Customers table ──────────────────────────────────────────────────────── */
+
+.customers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.customers-table th {
+  background: var(--paper);
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+.customers-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.customers-table tr:last-child td {
+  border-bottom: none;
+}
+
+.customers-table tr:hover td {
+  background: #fffaf5;
+}
+
+/* ── Account page improvements ────────────────────────────────────────────── */
+
+.account-shell {
+  padding: clamp(28px, 5vw, 54px);
+  max-width: 900px;
+}
+
+.profile-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(52, 31, 22, 0.06);
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.profile-card-header h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.profile-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-field .label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.profile-field .value {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.profile-edit-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.profile-edit-form label {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.profile-edit-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.account-orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.account-orders-header h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.order-card-expanded {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.order-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.order-items-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--paper);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.order-items-list .item-qty {
+  font-weight: 800;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.order-card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 20px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.order-card-meta dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.order-card-meta dd {
+  margin: 0;
+}
+
+/* ── Table scroll wrapper ─────────────────────────────────────────────────── */
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+/* ── Top products list ────────────────────────────────────────────────────── */
+
+.top-products-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.top-products-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--paper);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.top-products-list .qty-badge {
+  background: var(--green);
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* ── Recent orders mini-list on dashboard ─────────────────────────────────── */
+
+.recent-orders-list {
+  display: grid;
+  gap: 10px;
+}
+
+.recent-order-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.recent-order-row .order-num {
+  font-weight: 800;
+  color: var(--red);
+}
+
+.recent-order-row .order-company {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-order-row .order-date {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .profile-fields,
+  .profile-edit-form .form-row,
+  .modal-form .form-row,
+  .order-detail-inner,
+  .order-card-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .recent-order-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .orders-table,
+  .customers-table {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-tabs {
+    padding: 0 16px;
+  }
+
+  .admin-content {
+    padding: 20px 16px;
+  }
+
+  .recent-order-row {
+    grid-template-columns: 1fr;
+  }
+}

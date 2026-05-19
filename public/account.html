@@ -19,15 +19,75 @@
     </nav>
   </header>
 
-  <main class="admin-shell">
-    <section class="section-heading">
-      <p class="eyebrow" data-i18n="accountEyebrow">Customer account</p>
-      <h1 data-i18n="accountTitle">My order history</h1>
-      <p id="accountSummary" class="account-summary"></p>
+  <main class="account-shell">
+    <!-- Profile card -->
+    <section class="profile-card">
+      <div class="profile-card-header">
+        <div>
+          <p class="eyebrow" data-i18n="accountEyebrow" style="margin-bottom:4px">Customer account</p>
+          <h2 id="profileName">—</h2>
+        </div>
+        <button class="btn-sm" id="editProfileBtn" type="button">Edit profile</button>
+      </div>
+
+      <div class="profile-fields" id="profileFields">
+        <div class="profile-field">
+          <span class="label">Company</span>
+          <span class="value" id="profileCompany">—</span>
+        </div>
+        <div class="profile-field">
+          <span class="label">Email</span>
+          <span class="value" id="profileEmail">—</span>
+        </div>
+        <div class="profile-field">
+          <span class="label">Phone</span>
+          <span class="value" id="profilePhone">—</span>
+        </div>
+        <div class="profile-field">
+          <span class="label">Delivery address</span>
+          <span class="value" id="profileAddress">—</span>
+        </div>
+      </div>
+
+      <!-- Edit form (hidden by default) -->
+      <form class="profile-edit-form" id="profileEditForm" novalidate style="display:none">
+        <div class="form-row">
+          <label>
+            Contact name
+            <input id="editName" type="text" />
+          </label>
+          <label>
+            Company
+            <input id="editCompany" type="text" />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            Phone
+            <input id="editPhone" type="tel" />
+          </label>
+        </div>
+        <label>
+          Delivery address
+          <textarea id="editAddress" rows="2"></textarea>
+        </label>
+        <div class="profile-edit-actions">
+          <button class="btn-sm primary" type="submit">Save changes</button>
+          <button class="btn-sm" type="button" id="cancelEditBtn">Cancel</button>
+        </div>
+        <p id="profileEditStatus" class="form-status"></p>
+      </form>
     </section>
+
+    <!-- Order history -->
+    <div class="account-orders-header">
+      <h2 data-i18n="accountTitle">My order history</h2>
+      <a class="button primary" href="/order" style="font-size:14px;min-height:38px;padding:8px 16px" data-i18n="navOrder">Place your order</a>
+    </div>
+
     <div id="accountOrdersList" class="orders-list"></div>
   </main>
 
-  <script src="/js/app.js?v=20260519-3" defer></script>
+  <script src="/js/app.js?v=20260519-4" defer></script>
 </body>
 </html>
