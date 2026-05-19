@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const express = require('express');
 const fs = require('fs');
+const multer = require('multer');
 const nodemailer = require('nodemailer');
 const path = require('path');
 
@@ -9,6 +10,7 @@ const port = process.env.PORT || 3000;
 const rootDir = __dirname;
 const publicDir = path.join(rootDir, 'public');
 const dataDir = path.join(rootDir, 'data');
+const uploadsDir = path.join(rootDir, 'uploads');
 const dbPath = path.join(dataDir, 'db.json');
 
 const SESSION_COOKIE = 'benito_session';
@@ -108,6 +110,8 @@ const products = [
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(publicDir));
+
+const upload = multer({ dest: uploadsDir });
 
 ensureDatabase();
 ensureDefaultAdmin();
@@ -232,6 +236,70 @@ app.post('/api/orders', (req, res) => {
   });
 });
 
+app.post('/upload-pdf', upload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No PDF file was received.' });
+  }
+
+  const filePath = req.file.path;
+  const emailCliente = String(req.body.emailCliente || '').trim();
+  const nombreCliente = String(req.body.nombreCliente || 'Not specified').trim();
+  const direccionEnvio = String(req.body.direccionEnvio || 'Not specified').trim();
+  const nombreOrden = String(req.body.nombreOrden || req.file.originalname || createOrderNumber()).trim();
+
+  if (!emailCliente) {
+    cleanupUpload(filePath);
+    return res.status(400).json({ success: false, message: 'Customer email is required.' });
+  }
+
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    cleanupUpload(filePath);
+    return res.status(500).json({ success: false, message: 'SMTP is not configured.' });
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+    to: [process.env.ORDER_EMAIL || process.env.SMTP_USER, emailCliente],
+    subject: `New Purchase Order - ${nombreOrden}`,
+    text: `New Order Received.
+
+Customer Name: ${nombreCliente}
+Email: ${emailCliente}
+Delivery address if different: ${direccionEnvio}
+
+The purchase order PDF is attached.`,
+    attachments: [
+      {
+        filename: `${nombreOrden}.pdf`,
+        path: filePath
+      }
+    ]
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Legacy PDF email sent:', info.response);
+    res.json({ success: true, message: 'PDF received and email sent.' });
+  } catch (error) {
+    console.error('Legacy PDF email failed:', {
+      code: error.code,
+      command: error.command,
+      message: error.message
+    });
+    res.status(500).json({ success: false, message: 'Email failed.', error: error.message });
+  } finally {
+    cleanupUpload(filePath);
+  }
+});
+
 app.get('/api/orders', requireAuth, requireRole('admin'), (_req, res) => {
   const db = readDb();
   res.json({ orders: db.orders });
@@ -254,6 +322,7 @@ app.listen(port, () => {
 
 function ensureDatabase() {
   fs.mkdirSync(dataDir, { recursive: true });
+  fs.mkdirSync(uploadsDir, { recursive: true });
   if (!fs.existsSync(dbPath)) {
     writeDb(defaultDb);
   }
@@ -289,6 +358,12 @@ function readDb() {
 
 function writeDb(db) {
   fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+}
+
+function cleanupUpload(filePath) {
+  fs.unlink(filePath, (error) => {
+    if (error) console.error('Upload cleanup failed:', error);
+  });
 }
 
 function hashPassword(password) {
