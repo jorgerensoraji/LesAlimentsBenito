@@ -656,6 +656,7 @@ function bindAdminTabs() {
         case 'orders': await loadAdminOrders(); break;
         case 'products': await loadAdminProducts(); break;
         case 'customers': await loadAdminCustomers(); break;
+        case 'settings': await loadAdminSettings(); break;
       }
     });
   });
@@ -1038,6 +1039,94 @@ function closeProductModal() {
   if (modal) modal.classList.add('hidden');
   editingProductId = null;
 }
+
+// ── Admin Customers ───────────────────────────────────────────────────────────
+
+// ── Admin Settings ────────────────────────────────────────────────────────────
+
+let settingsLoaded = false;
+
+async function loadAdminSettings() {
+  if (settingsLoaded) return;
+  try {
+    const s = await fetch('/api/settings').then((r) => r.json());
+    setVal('sCompanyName',     s.companyName     || '');
+    setVal('sCompanySubtitle', s.companySubtitle || '');
+    setVal('sCompanyAddress',  s.companyAddress  || '');
+    setVal('sCompanyPhone',    s.companyPhone    || '');
+    setVal('sCompanyFax',      s.companyFax      || '');
+    const logoEl = document.getElementById('currentLogo');
+    if (logoEl && s.logoPath) logoEl.src = s.logoPath;
+    settingsLoaded = true;
+    bindSettingsForms();
+  } catch (error) {
+    console.error('Settings load failed:', error);
+  }
+}
+
+function bindSettingsForms() {
+  const form = document.getElementById('settingsForm');
+  const statusEl = document.getElementById('settingsStatus');
+  if (form && !form._bound) {
+    form._bound = true;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = 'Saving…';
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            companyName:     getVal('sCompanyName'),
+            companySubtitle: getVal('sCompanySubtitle'),
+            companyAddress:  getVal('sCompanyAddress'),
+            companyPhone:    getVal('sCompanyPhone'),
+            companyFax:      getVal('sCompanyFax')
+          })
+        });
+        const data = await res.json();
+        statusEl.textContent = data.success ? 'Saved.' : (data.message || 'Save failed.');
+        statusEl.className = 'form-status' + (data.success ? '' : ' error');
+      } catch (_) {
+        statusEl.textContent = 'Save failed.';
+        statusEl.className = 'form-status error';
+      }
+    });
+  }
+
+  const logoForm = document.getElementById('logoForm');
+  const logoStatus = document.getElementById('logoStatus');
+  if (logoForm && !logoForm._bound) {
+    logoForm._bound = true;
+    logoForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = document.getElementById('logoFile').files[0];
+      if (!file) { logoStatus.textContent = 'Choose a file first.'; return; }
+      logoStatus.textContent = 'Uploading…';
+      const fd = new FormData();
+      fd.append('logo', file);
+      try {
+        const res = await fetch('/api/admin/logo', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success) {
+          logoStatus.textContent = 'Logo updated.';
+          logoStatus.className = 'form-status';
+          const logoEl = document.getElementById('currentLogo');
+          if (logoEl) logoEl.src = data.logoPath + '?v=' + Date.now();
+        } else {
+          logoStatus.textContent = data.message || 'Upload failed.';
+          logoStatus.className = 'form-status error';
+        }
+      } catch (_) {
+        logoStatus.textContent = 'Upload failed.';
+        logoStatus.className = 'form-status error';
+      }
+    });
+  }
+}
+
+function setVal(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+function getVal(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 
 // ── Admin Customers ───────────────────────────────────────────────────────────
 

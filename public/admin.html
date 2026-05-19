@@ -25,6 +25,7 @@
     <button class="tab-btn" data-tab="orders">Orders</button>
     <button class="tab-btn" data-tab="products">Products</button>
     <button class="tab-btn" data-tab="customers">Customers</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
   </nav>
 
   <!-- DASHBOARD TAB -->
@@ -145,6 +146,60 @@
     </div>
   </div>
 
+  <!-- SETTINGS TAB -->
+  <div id="tab-settings" class="tab-panel">
+    <div class="admin-content">
+      <div class="admin-section-header">
+        <h2>Company Settings</h2>
+      </div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">
+        These details appear on the PDF order form sent with each order.
+      </p>
+
+      <form id="settingsForm" class="order-form" style="max-width:560px" novalidate>
+        <label>
+          Company name
+          <input id="sCompanyName" type="text" placeholder="LES ALIMENTS BENITO" />
+        </label>
+        <label>
+          Company subtitle / legal name
+          <input id="sCompanySubtitle" type="text" placeholder="1241 5801 CANADA INC." />
+        </label>
+        <label>
+          Address
+          <input id="sCompanyAddress" type="text" placeholder="11525, 4ieme Avenue, R.D.P., QC  H1E 2Y8" />
+        </label>
+        <label>
+          Phone
+          <input id="sCompanyPhone" type="text" placeholder="Tel.: (514) 723-2378" />
+        </label>
+        <label>
+          Fax
+          <input id="sCompanyFax" type="text" placeholder="Fax: (514) 723-3231" />
+        </label>
+        <button class="button primary" type="submit" style="margin-top:8px">Save company info</button>
+        <p id="settingsStatus" class="form-status" role="status"></p>
+      </form>
+
+      <hr style="margin:32px 0;border:none;border-top:1px solid var(--border)" />
+
+      <h3 style="margin-bottom:12px">Logo</h3>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:16px">
+        Upload a new logo image (PNG or JPEG). It will appear in the website header.
+      </p>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+        <img id="currentLogo" src="/image/beni.png" alt="Current logo" style="height:60px;object-fit:contain;border:1px solid var(--border);padding:4px;border-radius:4px" />
+        <form id="logoForm">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input id="logoFile" type="file" accept="image/png,image/jpeg" style="font-size:14px" />
+          </label>
+          <button class="btn-sm primary" type="submit" style="margin-top:8px">Upload logo</button>
+        </form>
+      </div>
+      <p id="logoStatus" class="form-status" role="status"></p>
+    </div>
+  </div>
+
   <!-- Product modal -->
   <div class="modal-overlay hidden" id="productModal">
     <div class="modal-box">
@@ -200,6 +255,6 @@
     </div>
   </div>
 
-  <script src="/js/app.js?v=20260519-4" defer></script>
+  <script src="/js/app.js?v=20260519-5" defer></script>
 </body>
 </html>

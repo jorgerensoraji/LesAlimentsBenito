@@ -25,6 +25,8 @@ const {
   listOrdersForUser,
   updateOrderStatus,
   getAdminStats,
+  getSettings,
+  updateSettings,
   hashPassword,
   createOrderNumber
 } = require('./lib/storage');
@@ -188,7 +190,7 @@ app.post('/api/products/:id/image', requireAuth, requireRole('admin'), upload.si
 
 app.post('/api/orders', async (req, res) => {
   const user = await getUserFromRequest(req);
-  const order = normalizeOrder(req.body, user);
+  const order = await normalizeOrder(req.body, user);
 
   if (!order.customer.company || !order.customer.email || !order.items.length) {
     return res.status(400).json({
@@ -212,6 +214,34 @@ app.post('/api/orders', async (req, res) => {
       message: error.message
     });
   });
+});
+
+// ── Settings API (public read, admin write) ───────────────────────────────────
+
+app.get('/api/settings', async (_req, res) => {
+  const settings = await getSettings();
+  // Omit internal keys before sending to public
+  const { companyName, companySubtitle, companyAddress, companyPhone, companyFax, logoPath } = settings;
+  res.json({ companyName, companySubtitle, companyAddress, companyPhone, companyFax, logoPath });
+});
+
+app.put('/api/admin/settings', requireAuth, requireRole('admin'), async (req, res) => {
+  const { companyName, companySubtitle, companyAddress, companyPhone, companyFax } = req.body;
+  const updated = await updateSettings({ companyName, companySubtitle, companyAddress, companyPhone, companyFax });
+  res.json({ success: true, settings: updated });
+});
+
+app.post('/api/admin/logo', requireAuth, requireRole('admin'), upload.single('logo'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ success: false, message: 'No logo file provided.' });
+
+  const ext = path.extname(req.file.originalname).toLowerCase() || '.png';
+  const filename = `logo${ext}`;
+  const dest = path.join(publicDir, 'image', filename);
+
+  fs.renameSync(req.file.path, dest);
+  const logoPath = `/image/${filename}`;
+  await updateSettings({ logoPath });
+  res.json({ success: true, logoPath });
 });
 
 // ── Admin API ─────────────────────────────────────────────────────────────────
@@ -385,7 +415,7 @@ function publicUser(user) {
 
 // ── Order helpers ─────────────────────────────────────────────────────────────
 
-function normalizeOrder(payload, user) {
+async function normalizeOrder(payload, user) {
   const items = Array.isArray(payload.items) ? payload.items : [];
   const cleanItems = items
     .map((item) => ({
@@ -401,7 +431,7 @@ function normalizeOrder(payload, user) {
   return {
     id: crypto.randomUUID(),
     userId: user ? user.id : null,
-    orderNumber: createOrderNumber(),
+    orderNumber: await createOrderNumber(),
     createdAt: new Date().toISOString(),
     status: 'new',
     customer: {
