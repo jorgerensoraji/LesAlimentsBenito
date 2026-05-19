@@ -408,6 +408,11 @@ function createOrderNumber() {
 }
 
 async function sendOrderEmail(order) {
+  if (process.env.RESEND_API_KEY) {
+    await sendOrderEmailWithResend(order);
+    return;
+  }
+
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.log(`Order ${order.orderNumber} saved. SMTP is not configured.`);
     return;
@@ -432,10 +437,41 @@ async function sendOrderEmail(order) {
     .join('\n');
 
   await transporter.sendMail({
-    from: process.env.SMTP_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_USER,
     to: recipients,
     subject: `New order ${order.orderNumber} - Les Aliments Benito`,
-    text: `New order received.
+    text: buildOrderEmailText(order, itemLines)
+  });
+}
+
+async function sendOrderEmailWithResend(order) {
+  const recipients = [process.env.ORDER_EMAIL || process.env.SMTP_USER, order.customer.email].filter(Boolean);
+  const itemLines = order.items
+    .map((item) => `- ${item.name}: ${item.quantity} ${item.unit}${item.notes ? ` (${item.notes})` : ''}`)
+    .join('\n');
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: process.env.EMAIL_FROM || 'Les Aliments Benito <onboarding@resend.dev>',
+      to: recipients,
+      subject: `New order ${order.orderNumber} - Les Aliments Benito`,
+      text: buildOrderEmailText(order, itemLines)
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Resend API failed: ${response.status} ${errorText}`);
+  }
+}
+
+function buildOrderEmailText(order, itemLines) {
+  return `New order received.
 
 Order: ${order.orderNumber}
 Company: ${order.customer.company}
@@ -448,6 +484,5 @@ Products:
 ${itemLines}
 
 Message:
-${order.customer.message || '-'}`
-  });
+${order.customer.message || '-'}`;
 }
