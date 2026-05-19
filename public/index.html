@@ -1,61 +1,107 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Les Aliments Benito</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/image/beni.png" alt="Les Aliments Benito logo" />
+      <span>Les Aliments Benito</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#products" data-i18n="navProducts">Products</a>
+      <a href="#location" data-i18n="navLocation">Location</a>
+      <a href="/order" class="nav-action" data-i18n="navOrder">Place your order</a>
+      <a href="/signup" data-i18n="navSignup">Create account</a>
+      <a href="/login" data-i18n="navLogin">Login</a>
+      <button class="language-toggle" type="button" data-language-toggle>FR</button>
+    </nav>
+  </header>
+
   <main>
-    <div class="header-flex">
-      <img src="image/beni.png" alt="Logo" class="logo" />
-      <h1 class="flashing-title">Place your order</h1>
-      <img id="logoPDF2" src="image/beni1.png" alt="Logo" class="logo" />
-      <h1 class="flashing-title">Phone: 514 723 2378</h1>  
-      <img id="logoPDF" src="image/beni3.png" alt="Logo" class="logo" />
-    </div>
-
-    <div class="container">
-      <!-- Columna izquierda -->
-      <div class="left-panel">
-        <input id="searchBar" type="text" placeholder="Search product... , Rechercher un produit..." oninput="buscarProducto()" autocomplete="off" />
-        <div id="productoLista"></div>
+    <section class="hero">
+      <div class="hero-media">
+        <img src="/image/ribAAA.jpg" alt="Premium meat cuts prepared for wholesale orders" />
       </div>
-
-      <!-- Columna derecha -->
-      <div class="right-panel">
-        <h2 >Produits sélectionnés</h2>
-        <div id="productosSeleccionados"></div>
-
-        <div class="form-group">
-          <label for="clienteNombre">Nom complet de l'entreprise</label>
-          <input id="clienteNombre" type="text" placeholder="Nom complet de l'entreprise" />
+      <div class="hero-content">
+        <p class="eyebrow" data-i18n="heroEyebrow">Wholesale meat supplier</p>
+        <h1 data-i18n="heroTitle">Fresh meat products for restaurants, markets, and food businesses.</h1>
+        <p data-i18n="heroText">Les Aliments Benito supplies reliable beef, chicken, pork, lamb, specialty products, and kitchen essentials for professional buyers.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="/order" data-i18n="heroOrder">Place your order</a>
+          <a class="button secondary" href="#contact" data-i18n="heroContact">Contact us</a>
         </div>
-        <div class="form-group">
-          <label for="clienteEmail">Adresse e-mail</label>
-          <input id="clienteEmail" type="email" placeholder="Adresse e-mail" />
-        </div>
-        <div class="form-group">
-          <label for="direccionEnvio">Adresse de livraison (si différente)</label>
-          <textarea id="direccionEnvio" placeholder="Adresse de livraison (si différente)"></textarea>
-        </div>
-
-        <button onclick="generarYEnviarPDF()" class="flashing-title2">Send order, Envoyer la commande</button>
       </div>
-    </div>
+    </section>
+
+    <section class="section intro">
+      <div>
+        <p class="eyebrow" data-i18n="aboutEyebrow">Built for food service</p>
+        <h2 data-i18n="aboutTitle">Dependable supply, clear ordering, and bilingual service.</h2>
+      </div>
+      <p data-i18n="aboutText">We help restaurants, caterers, grocery counters, and production kitchens order the products they need with less back-and-forth.</p>
+    </section>
+
+    <section class="section products-section" id="products">
+      <div class="section-heading">
+        <p class="eyebrow" data-i18n="productsEyebrow">Product families</p>
+        <h2 data-i18n="productsTitle">Meat, poultry, lamb, pork, specialty, and grocery items.</h2>
+      </div>
+      <div class="product-grid">
+        <article class="product-card">
+          <img src="/image/shawarmab.jpg" alt="Beef shawarma cuts" />
+          <h3 data-i18n="beefTitle">Beef</h3>
+          <p data-i18n="beefText">Quality cuts for shawarma, kitchens, and wholesale service.</p>
+        </article>
+        <article class="product-card">
+          <img src="/image/wholechickenwings.jpg" alt="Fresh chicken wings" />
+          <h3 data-i18n="chickenTitle">Chicken</h3>
+          <p data-i18n="chickenText">Breasts, wings, cubes, and fresh poultry formats.</p>
+        </article>
+        <article class="product-card">
+          <img src="/image/porkbuttsliced.jpg" alt="Sliced pork butt" />
+          <h3 data-i18n="porkTitle">Pork</h3>
+          <p data-i18n="porkText">Practical pork cuts for production and prepared menus.</p>
+        </article>
+        <article class="product-card">
+          <img src="/image/lamblegbnlessaus.jpg" alt="Boneless lamb leg" />
+          <h3 data-i18n="lambTitle">Lamb</h3>
+          <p data-i18n="lambText">Premium lamb products for professional kitchens.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section order-band">
+      <div>
+        <p class="eyebrow" data-i18n="orderEyebrow">Fast order request</p>
+        <h2 data-i18n="orderTitle">Build your order online and send it directly to our team.</h2>
+      </div>
+      <a class="button primary" href="/order" data-i18n="orderButton">Open order page</a>
+    </section>
+
+    <section class="section info-grid" id="location">
+      <div>
+        <p class="eyebrow" data-i18n="locationEyebrow">Location</p>
+        <h2 data-i18n="locationTitle">Serving professional food buyers in the Montreal area.</h2>
+        <p data-i18n="locationText">Phone: 514 723 2378. Add your delivery address when placing an order and our team will confirm the details.</p>
+      </div>
+      <div id="contact">
+        <p class="eyebrow" data-i18n="contactEyebrow">Contact</p>
+        <h2 data-i18n="contactTitle">Need a custom product or special quantity?</h2>
+        <p data-i18n="contactText">Send the details through the order form. You can include notes for cuts, packing, delivery, and substitutions.</p>
+      </div>
+    </section>
   </main>
 
-  <!-- Librerías -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    (function () {
-      emailjs.init("UzUXeU3cpKBweU8wB"); // Tu clave pública de EmailJS
-    })();
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <footer class="site-footer">
+    <span>© 2026 Les Aliments Benito</span>
+    <a href="/admin" data-i18n="footerAdmin">Admin</a>
+  </footer>
 
-  <script defer src="js/script.js"></script>
+  <script src="/js/app.js" defer></script>
 </body>
 </html>

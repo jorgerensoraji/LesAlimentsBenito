@@ -1,23 +1,28 @@
 {
-  "name": "orden-de-compra",
-  "version": "1.0.0",
-  "description": "Aplicación para gestionar órdenes de compra con generación de PDFs y envío por correo",
+  "name": "les-aliments-benito",
+  "version": "2.0.0",
+  "description": "Bilingual website and ordering system for Les Aliments Benito.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "build": "mkdir -p public && cp ./index.html public/"
+    "dev": "nodemon server.js"
   },
-  "keywords": ["Node.js", "Express", "Nodemailer", "Multer", "PDF", "Órdenes de compra"],
-  "author": "Tu Nombre <deisyrestore@gmail.com>",
+  "keywords": [
+    "express",
+    "orders",
+    "meat",
+    "bilingual",
+    "les aliments benito"
+  ],
+  "author": "Les Aliments Benito",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "form-data": "^4.0.2",
     "multer": "^1.4.5-lts.2",
-    "nodemailer": "^7.0.3",
     "node-fetch": "^2.7.0",
-    "form-data": "^4.0.2"
+    "nodemailer": "^7.0.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

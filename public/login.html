@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login | Les Aliments Benito</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body data-page="login">
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/image/beni.png" alt="Les Aliments Benito logo" />
+      <span>Les Aliments Benito</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="/" data-i18n="navHome">Home</a>
+      <a href="/signup" data-i18n="navSignup">Create account</a>
+      <button class="language-toggle" type="button" data-language-toggle>FR</button>
+    </nav>
+  </header>
+
+  <main class="auth-shell">
+    <section class="auth-panel">
+      <p class="eyebrow" data-i18n="loginEyebrow">Team access</p>
+      <h1 data-i18n="loginTitle">Login</h1>
+      <form id="loginForm" class="order-form">
+        <label>
+          <span data-i18n="emailLabel">Email</span>
+          <input name="email" type="email" required autocomplete="email" />
+        </label>
+        <label>
+          <span data-i18n="passwordLabel">Password</span>
+          <input name="password" type="password" required autocomplete="current-password" />
+        </label>
+        <button class="button primary full" type="submit" data-i18n="loginButton">Login</button>
+        <p id="loginStatus" class="form-status" role="status"></p>
+      </form>
+      <p class="auth-note">
+        <span data-i18n="loginSignupText">Need an account?</span>
+        <a href="/signup" data-i18n="loginSignupLink">Create one</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="/js/app.js" defer></script>
+</body>
+</html>
