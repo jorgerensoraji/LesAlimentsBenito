@@ -180,6 +180,7 @@ let selectedItems = [];
 document.addEventListener('DOMContentLoaded', () => {
   applyLanguage();
   bindLanguageToggle();
+  applySettingsLogo(); // update header logo from settings (non-blocking)
 
   const page = document.body.dataset.page;
   if (page === 'order') initOrderPage();
@@ -189,6 +190,21 @@ document.addEventListener('DOMContentLoaded', () => {
   else if (page === 'admin') initAdminPage();
   else updateNavForSession();
 });
+
+// ── Logo from settings ────────────────────────────────────────────────────────
+
+async function applySettingsLogo() {
+  try {
+    const s = await fetch('/api/settings').then((r) => r.json());
+    if (s && s.logoPath) updateHeaderLogo(s.logoPath);
+  } catch (_) {}
+}
+
+function updateHeaderLogo(logoPath) {
+  document.querySelectorAll('header img[alt*="logo"]').forEach((img) => {
+    img.src = logoPath;
+  });
+}
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 
@@ -1111,8 +1127,10 @@ function bindSettingsForms() {
         if (data.success) {
           logoStatus.textContent = 'Logo updated.';
           logoStatus.className = 'form-status';
+          const bust = data.logoPath + '?v=' + Date.now();
           const logoEl = document.getElementById('currentLogo');
-          if (logoEl) logoEl.src = data.logoPath + '?v=' + Date.now();
+          if (logoEl) logoEl.src = bust;
+          updateHeaderLogo(bust); // also refresh the site header immediately
         } else {
           logoStatus.textContent = data.message || 'Upload failed.';
           logoStatus.className = 'form-status error';
