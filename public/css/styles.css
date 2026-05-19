@@ -552,11 +552,7 @@ textarea {
   }
 }
 
-/* ── Dynamic nav auth items ───────────────────────────────────────────────── */
-
-.nav-auth-item {
-  display: none;
-}
+/* ── Dynamic nav auth items — hidden via inline style, shown by JS ────────── */
 
 /* ── Status badges ────────────────────────────────────────────────────────── */
 
