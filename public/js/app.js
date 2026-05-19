@@ -53,6 +53,10 @@ const translations = {
     notes: 'Notes',
     emptySelection: 'No products selected yet.',
     orderMissing: 'Select at least one product.',
+    companyMissing: 'Enter your company name.',
+    emailMissing: 'Enter a valid email address.',
+    productsLoadError: 'Products could not load. Refresh the page and try again.',
+    sendingOrder: 'Sending order...',
     orderSuccess: 'Order sent. Your order number is',
     orderError: 'We could not send the order. Please try again.',
     loginEyebrow: 'Account access',
@@ -129,6 +133,10 @@ const translations = {
     notes: 'Notes',
     emptySelection: 'Aucun produit selectionne.',
     orderMissing: 'Selectionnez au moins un produit.',
+    companyMissing: 'Entrez le nom de votre entreprise.',
+    emailMissing: 'Entrez une adresse courriel valide.',
+    productsLoadError: 'Impossible de charger les produits. Actualisez la page et reessayez.',
+    sendingOrder: 'Envoi de la commande...',
     orderSuccess: 'Commande envoyee. Votre numero de commande est',
     orderError: 'Impossible d envoyer la commande. Veuillez reessayer.',
     loginEyebrow: 'Acces au compte',
@@ -201,17 +209,26 @@ function applyLanguage() {
 }
 
 async function initOrderPage() {
+  const form = document.getElementById('orderForm');
+  form.addEventListener('submit', submitOrder);
   await prefillOrderForm();
-  const response = await fetch('/api/products');
-  const data = await response.json();
-  products = data.products;
-  setupCategoryFilter();
-  renderProducts();
-  renderSelectedItems();
 
-  document.getElementById('productSearch').addEventListener('input', renderProducts);
-  document.getElementById('categoryFilter').addEventListener('change', renderProducts);
-  document.getElementById('orderForm').addEventListener('submit', submitOrder);
+  try {
+    const response = await fetch('/api/products');
+    if (!response.ok) throw new Error('Products failed to load');
+    const data = await response.json();
+    products = data.products;
+    setupCategoryFilter();
+    renderProducts();
+    renderSelectedItems();
+
+    document.getElementById('productSearch').addEventListener('input', renderProducts);
+    document.getElementById('categoryFilter').addEventListener('change', renderProducts);
+  } catch (error) {
+    const status = document.getElementById('orderStatus');
+    status.classList.add('error');
+    status.textContent = t('productsLoadError');
+  }
 }
 
 async function prefillOrderForm() {
@@ -333,7 +350,24 @@ function renderSelectedItems() {
 async function submitOrder(event) {
   event.preventDefault();
   const status = document.getElementById('orderStatus');
+  const submitButton = event.currentTarget.querySelector('[type="submit"]');
   status.classList.remove('error');
+
+  const formData = new FormData(event.currentTarget);
+  const payload = Object.fromEntries(formData.entries());
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!String(payload.company || '').trim()) {
+    status.classList.add('error');
+    status.textContent = t('companyMissing');
+    return;
+  }
+
+  if (!emailPattern.test(String(payload.email || '').trim())) {
+    status.classList.add('error');
+    status.textContent = t('emailMissing');
+    return;
+  }
 
   if (!selectedItems.length) {
     status.classList.add('error');
@@ -341,11 +375,11 @@ async function submitOrder(event) {
     return;
   }
 
-  const formData = new FormData(event.currentTarget);
-  const payload = Object.fromEntries(formData.entries());
   payload.items = selectedItems;
 
   try {
+    submitButton.disabled = true;
+    status.textContent = t('sendingOrder');
     const response = await fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -361,6 +395,8 @@ async function submitOrder(event) {
   } catch (error) {
     status.classList.add('error');
     status.textContent = t('orderError');
+  } finally {
+    submitButton.disabled = false;
   }
 }
 
