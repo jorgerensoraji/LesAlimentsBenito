@@ -351,11 +351,12 @@ function renderSelectedItems() {
 
 async function submitOrder(event) {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = document.getElementById('orderStatus');
-  const submitButton = event.currentTarget.querySelector('[type="submit"]');
+  const submitButton = form.querySelector('[type="submit"]');
   status.classList.remove('error');
 
-  const formData = new FormData(event.currentTarget);
+  const formData = new FormData(form);
   const payload = Object.fromEntries(formData.entries());
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -400,7 +401,7 @@ async function submitOrder(event) {
     if (result.success === false) throw new Error(result.message || 'Order failed');
 
     selectedItems = [];
-    event.currentTarget.reset();
+    form.reset();
     renderSelectedItems();
     status.textContent = `${t('orderSaved')} ${result.orderNumber || ''}.`;
   } catch (error) {
