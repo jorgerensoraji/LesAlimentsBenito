@@ -408,6 +408,11 @@ function createOrderNumber() {
 }
 
 async function sendOrderEmail(order) {
+  if (process.env.GOOGLE_SCRIPT_URL) {
+    await sendOrderEmailWithGoogleScript(order);
+    return;
+  }
+
   if (process.env.RESEND_API_KEY) {
     await sendOrderEmailWithResend(order);
     return;
@@ -442,6 +447,31 @@ async function sendOrderEmail(order) {
     subject: `New order ${order.orderNumber} - Les Aliments Benito`,
     text: buildOrderEmailText(order, itemLines)
   });
+}
+
+async function sendOrderEmailWithGoogleScript(order) {
+  const recipients = [process.env.ORDER_EMAIL || process.env.SMTP_USER, order.customer.email].filter(Boolean);
+  const itemLines = order.items
+    .map((item) => `- ${item.name}: ${item.quantity} ${item.unit}${item.notes ? ` (${item.notes})` : ''}`)
+    .join('\n');
+
+  const response = await fetch(process.env.GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify({
+      secret: process.env.GOOGLE_SCRIPT_SECRET || '',
+      to: recipients.join(','),
+      subject: `New order ${order.orderNumber} - Les Aliments Benito`,
+      text: buildOrderEmailText(order, itemLines)
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Google Script email failed: ${response.status} ${errorText}`);
+  }
 }
 
 async function sendOrderEmailWithResend(order) {
