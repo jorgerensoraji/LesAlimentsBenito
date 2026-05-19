@@ -291,6 +291,7 @@ async function initOrderPage() {
     const data = await response.json();
     products = data.products;
     setupCategoryFilter();
+    applyCategoryFromUrl();
     renderProducts();
     renderSelectedItems();
     document.getElementById('productSearch').addEventListener('input', renderProducts);
@@ -325,6 +326,17 @@ function setupCategoryFilter() {
     option.textContent = category;
     filter.appendChild(option);
   });
+}
+
+function applyCategoryFromUrl() {
+  const filter = document.getElementById('categoryFilter');
+  const requestedCategory = new URLSearchParams(window.location.search).get('category');
+  if (!filter || !requestedCategory) return;
+
+  const matchingOption = [...filter.options].find((option) => (
+    option.value.toLowerCase() === requestedCategory.toLowerCase()
+  ));
+  if (matchingOption) filter.value = matchingOption.value;
 }
 
 function renderProducts() {
