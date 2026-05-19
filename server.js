@@ -437,23 +437,28 @@ async function sendOrderEmail(order) {
   });
 
   const recipients = [process.env.ORDER_EMAIL || process.env.SMTP_USER, order.customer.email];
-  const itemLines = order.items
-    .map((item) => `- ${item.name}: ${item.quantity} ${item.unit}${item.notes ? ` (${item.notes})` : ''}`)
-    .join('\n');
+  const itemLines = buildOrderItemLines(order);
+  const pdf = buildOrderPdf(order);
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM || process.env.SMTP_USER,
     to: recipients,
     subject: `New order ${order.orderNumber} - Les Aliments Benito`,
-    text: buildOrderEmailText(order, itemLines)
+    text: buildOrderEmailText(order, itemLines),
+    attachments: [
+      {
+        filename: `${order.orderNumber}.pdf`,
+        content: pdf,
+        contentType: 'application/pdf'
+      }
+    ]
   });
 }
 
 async function sendOrderEmailWithGoogleScript(order) {
   const recipients = [process.env.ORDER_EMAIL || process.env.SMTP_USER, order.customer.email].filter(Boolean);
-  const itemLines = order.items
-    .map((item) => `- ${item.name}: ${item.quantity} ${item.unit}${item.notes ? ` (${item.notes})` : ''}`)
-    .join('\n');
+  const itemLines = buildOrderItemLines(order);
+  const pdf = buildOrderPdf(order);
 
   const response = await fetch(process.env.GOOGLE_SCRIPT_URL, {
     method: 'POST',
@@ -464,7 +469,12 @@ async function sendOrderEmailWithGoogleScript(order) {
       secret: process.env.GOOGLE_SCRIPT_SECRET || '',
       to: recipients.join(','),
       subject: `New order ${order.orderNumber} - Les Aliments Benito`,
-      text: buildOrderEmailText(order, itemLines)
+      text: buildOrderEmailText(order, itemLines),
+      attachment: {
+        filename: `${order.orderNumber}.pdf`,
+        mimeType: 'application/pdf',
+        content: pdf.toString('base64')
+      }
     })
   });
 
@@ -476,9 +486,8 @@ async function sendOrderEmailWithGoogleScript(order) {
 
 async function sendOrderEmailWithResend(order) {
   const recipients = [process.env.ORDER_EMAIL || process.env.SMTP_USER, order.customer.email].filter(Boolean);
-  const itemLines = order.items
-    .map((item) => `- ${item.name}: ${item.quantity} ${item.unit}${item.notes ? ` (${item.notes})` : ''}`)
-    .join('\n');
+  const itemLines = buildOrderItemLines(order);
+  const pdf = buildOrderPdf(order);
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -490,7 +499,13 @@ async function sendOrderEmailWithResend(order) {
       from: process.env.EMAIL_FROM || 'Les Aliments Benito <onboarding@resend.dev>',
       to: recipients,
       subject: `New order ${order.orderNumber} - Les Aliments Benito`,
-      text: buildOrderEmailText(order, itemLines)
+      text: buildOrderEmailText(order, itemLines),
+      attachments: [
+        {
+          filename: `${order.orderNumber}.pdf`,
+          content: pdf.toString('base64')
+        }
+      ]
     })
   });
 
@@ -498,6 +513,12 @@ async function sendOrderEmailWithResend(order) {
     const errorText = await response.text();
     throw new Error(`Resend API failed: ${response.status} ${errorText}`);
   }
+}
+
+function buildOrderItemLines(order) {
+  return order.items
+    .map((item) => `- ${item.name}: ${item.quantity} ${item.unit}${item.notes ? ` (${item.notes})` : ''}`)
+    .join('\n');
 }
 
 function buildOrderEmailText(order, itemLines) {
@@ -515,4 +536,137 @@ ${itemLines}
 
 Message:
 ${order.customer.message || '-'}`;
+}
+
+function buildOrderPdf(order) {
+  const lines = [
+    'LES ALIMENTS BENITO',
+    `Purchase Order: ${order.orderNumber}`,
+    `Date: ${new Date(order.createdAt).toLocaleString('en-CA')}`,
+    '',
+    'Customer',
+    `Company: ${order.customer.company}`,
+    `Contact: ${order.customer.contact || '-'}`,
+    `Email: ${order.customer.email}`,
+    `Phone: ${order.customer.phone || '-'}`,
+    `Delivery address: ${order.customer.deliveryAddress || '-'}`,
+    '',
+    'Products'
+  ];
+
+  order.items.forEach((item, index) => {
+    lines.push(`${index + 1}. ${item.name}`);
+    lines.push(`   Quantity: ${item.quantity} ${item.unit}`);
+    lines.push(`   Notes: ${item.notes || '-'}`);
+  });
+
+  lines.push('');
+  lines.push('Message');
+  lines.push(order.customer.message || '-');
+
+  return createSimplePdf(lines);
+}
+
+function createSimplePdf(rawLines) {
+  const pageWidth = 612;
+  const pageHeight = 792;
+  const marginX = 50;
+  const startY = 742;
+  const lineHeight = 15;
+  const maxChars = 86;
+  const maxLinesPerPage = 45;
+  const wrappedLines = rawLines.flatMap((line) => wrapPdfLine(line, maxChars));
+  const pages = [];
+
+  for (let index = 0; index < wrappedLines.length; index += maxLinesPerPage) {
+    pages.push(wrappedLines.slice(index, index + maxLinesPerPage));
+  }
+
+  if (!pages.length) pages.push(['']);
+
+  const objects = [];
+  objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+  objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
+
+  const kids = [];
+  let objectNumber = 4;
+
+  pages.forEach((pageLines) => {
+    const pageObjectNumber = objectNumber++;
+    const contentObjectNumber = objectNumber++;
+    kids.push(`${pageObjectNumber} 0 R`);
+
+    const text = pageLines.map((line) => `(${escapePdfText(line)}) Tj T*`).join('\n');
+    const stream = `BT
+/F1 11 Tf
+${marginX} ${startY} Td
+${lineHeight} TL
+${text}
+ET`;
+
+    objects[pageObjectNumber] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentObjectNumber} 0 R >>`;
+    objects[contentObjectNumber] = `<< /Length ${Buffer.byteLength(stream, 'utf8')} >>
+stream
+${stream}
+endstream`;
+  });
+
+  objects[2] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages.length} >>`;
+
+  const parts = ['%PDF-1.4\n'];
+  const offsets = [0];
+
+  for (let index = 1; index < objects.length; index += 1) {
+    offsets[index] = Buffer.byteLength(parts.join(''), 'utf8');
+    parts.push(`${index} 0 obj\n${objects[index]}\nendobj\n`);
+  }
+
+  const xrefOffset = Buffer.byteLength(parts.join(''), 'utf8');
+  parts.push(`xref
+0 ${objects.length}
+0000000000 65535 f 
+`);
+
+  for (let index = 1; index < objects.length; index += 1) {
+    parts.push(`${String(offsets[index]).padStart(10, '0')} 00000 n \n`);
+  }
+
+  parts.push(`trailer
+<< /Size ${objects.length} /Root 1 0 R >>
+startxref
+${xrefOffset}
+%%EOF`);
+
+  return Buffer.from(parts.join(''), 'utf8');
+}
+
+function wrapPdfLine(line, maxChars) {
+  const value = String(line || '');
+  if (value.length <= maxChars) return [value];
+
+  const words = value.split(' ');
+  const lines = [];
+  let current = '';
+
+  words.forEach((word) => {
+    const next = current ? `${current} ${word}` : word;
+    if (next.length > maxChars) {
+      if (current) lines.push(current);
+      current = word;
+    } else {
+      current = next;
+    }
+  });
+
+  if (current) lines.push(current);
+  return lines;
+}
+
+function escapePdfText(value) {
+  return String(value)
+    .normalize('NFKD')
+    .replace(/[^\x00-\x7F]/g, '')
+    .replace(/\\/g, '\\\\')
+    .replace(/\(/g, '\\(')
+    .replace(/\)/g, '\\)');
 }
