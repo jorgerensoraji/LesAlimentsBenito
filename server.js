@@ -261,7 +261,7 @@ function ensureDefaultAdmin() {
   const db = readDb();
   if (db.users.length > 0) return;
 
-  const email = process.env.ADMIN_EMAIL || 'admin@lesalimentsbenito.com';
+  const email = process.env.ADMIN_EMAIL || 'jorgerensoraji@hotmail.com';
   const password = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : 'ChangeMe123!');
 
   if (!password) {
