@@ -58,6 +58,7 @@ const translations = {
     productsLoadError: 'Products could not load. Refresh the page and try again.',
     sendingOrder: 'Sending order...',
     orderSuccess: 'Order sent. Your order number is',
+    orderSaved: 'Order received. Your order number is',
     orderError: 'We could not send the order. Please try again.',
     loginEyebrow: 'Account access',
     loginTitle: 'Login',
@@ -138,6 +139,7 @@ const translations = {
     productsLoadError: 'Impossible de charger les produits. Actualisez la page et reessayez.',
     sendingOrder: 'Envoi de la commande...',
     orderSuccess: 'Commande envoyee. Votre numero de commande est',
+    orderSaved: 'Commande recue. Votre numero de commande est',
     orderError: 'Impossible d envoyer la commande. Veuillez reessayer.',
     loginEyebrow: 'Acces au compte',
     loginTitle: 'Connexion',
@@ -385,14 +387,24 @@ async function submitOrder(event) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    const result = await response.json();
-    if (!response.ok || !result.success) throw new Error(result.message);
+    const resultText = await response.text();
+    let result = {};
+
+    try {
+      result = resultText ? JSON.parse(resultText) : {};
+    } catch (parseError) {
+      console.error('Order response was not JSON:', resultText);
+    }
+
+    if (!response.ok) throw new Error(result.message || resultText || response.statusText);
+    if (result.success === false) throw new Error(result.message || 'Order failed');
 
     selectedItems = [];
     event.currentTarget.reset();
     renderSelectedItems();
-    status.textContent = `${t('orderSuccess')} ${result.orderNumber}.`;
+    status.textContent = `${t('orderSaved')} ${result.orderNumber || ''}.`;
   } catch (error) {
+    console.error('Order submit failed:', error);
     status.classList.add('error');
     status.textContent = t('orderError');
   } finally {
