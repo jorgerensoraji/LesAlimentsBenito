@@ -4,6 +4,7 @@ const fs = require('fs');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const path = require('path');
+const { Pool } = require('pg');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,6 +18,12 @@ const SESSION_COOKIE = 'benito_session';
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'change-this-session-secret';
 const sessions = new Map();
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    })
+  : null;
 
 const defaultDb = {
   users: [],
@@ -113,9 +120,6 @@ app.use(express.static(publicDir));
 
 const upload = multer({ dest: uploadsDir });
 
-ensureDatabase();
-ensureDefaultAdmin();
-
 app.get('/', (_req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
@@ -144,15 +148,14 @@ app.get('/api/products', (_req, res) => {
   res.json({ products });
 });
 
-app.get('/api/session', (req, res) => {
-  const user = getUserFromRequest(req);
+app.get('/api/session', async (req, res) => {
+  const user = await getUserFromRequest(req);
   res.json({ authenticated: Boolean(user), user: user ? publicUser(user) : null });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
-  const db = readDb();
-  const user = db.users.find((item) => item.email.toLowerCase() === String(email || '').toLowerCase());
+  const user = await findUserByEmail(email);
 
   if (!user || !verifyPassword(password || '', user.passwordHash)) {
     return res.status(401).json({ success: false, message: 'Invalid email or password.' });
@@ -163,7 +166,7 @@ app.post('/api/login', (req, res) => {
   res.json({ success: true, user: publicUser(user) });
 });
 
-app.post('/api/signup', (req, res) => {
+app.post('/api/signup', async (req, res) => {
   const { company, contact, email, phone, deliveryAddress, password } = req.body;
   const cleanEmail = String(email || '').trim().toLowerCase();
   const cleanPassword = String(password || '');
@@ -175,8 +178,7 @@ app.post('/api/signup', (req, res) => {
     });
   }
 
-  const db = readDb();
-  const existingUser = db.users.find((user) => user.email.toLowerCase() === cleanEmail);
+  const existingUser = await findUserByEmail(cleanEmail);
   if (existingUser) {
     return res.status(409).json({ success: false, message: 'An account already exists for this email.' });
   }
@@ -193,8 +195,7 @@ app.post('/api/signup', (req, res) => {
     createdAt: new Date().toISOString()
   };
 
-  db.users.push(user);
-  writeDb(db);
+  await createUser(user);
 
   const token = createSession(user.id);
   setSessionCookie(res, token);
@@ -206,8 +207,8 @@ app.post('/api/logout', (_req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/orders', (req, res) => {
-  const user = getUserFromRequest(req);
+app.post('/api/orders', async (req, res) => {
+  const user = await getUserFromRequest(req);
   const order = normalizeOrder(req.body, user);
 
   if (!order.customer.company || !order.customer.email || !order.items.length) {
@@ -217,13 +218,11 @@ app.post('/api/orders', (req, res) => {
     });
   }
 
-  const db = readDb();
   if (!order.userId) {
-    const matchingUser = db.users.find((item) => item.email.toLowerCase() === order.customer.email.toLowerCase());
+    const matchingUser = await findUserByEmail(order.customer.email);
     if (matchingUser) order.userId = matchingUser.id;
   }
-  db.orders.unshift(order);
-  writeDb(db);
+  await createOrder(order);
 
   res.status(201).json({ success: true, orderNumber: order.orderNumber });
 
@@ -300,37 +299,110 @@ The purchase order PDF is attached.`,
   }
 });
 
-app.get('/api/orders', requireAuth, requireRole('admin'), (_req, res) => {
-  const db = readDb();
-  res.json({ orders: db.orders });
-});
-
-app.get('/api/my-orders', requireAuth, (req, res) => {
-  const db = readDb();
-  const userEmail = req.user.email.toLowerCase();
-  const orders = db.orders.filter((order) => {
-    const orderEmail = String(order.customer && order.customer.email || '').toLowerCase();
-    return order.userId === req.user.id || orderEmail === userEmail;
-  });
-
+app.get('/api/orders', requireAuth, requireRole('admin'), async (_req, res) => {
+  const orders = await listOrders();
   res.json({ orders });
 });
 
-app.listen(port, () => {
-  console.log(`Les Aliments Benito running on http://localhost:${port}`);
+app.get('/api/my-orders', requireAuth, async (req, res) => {
+  const orders = await listOrdersForUser(req.user);
+  res.json({ orders });
 });
 
-function ensureDatabase() {
+initStorage()
+  .then(() => {
+    app.listen(port, () => {
+      const storageName = pool ? 'PostgreSQL' : 'JSON file';
+      console.log(`Les Aliments Benito running on http://localhost:${port} using ${storageName} storage`);
+    });
+  })
+  .catch((error) => {
+    console.error('Startup failed:', error);
+    process.exit(1);
+  });
+
+async function initStorage() {
   fs.mkdirSync(dataDir, { recursive: true });
   fs.mkdirSync(uploadsDir, { recursive: true });
-  if (!fs.existsSync(dbPath)) {
+
+  if (pool) {
+    await ensurePostgresSchema();
+    await migrateJsonToPostgresIfEmpty();
+  } else if (!fs.existsSync(dbPath)) {
     writeDb(defaultDb);
   }
+
+  await ensureDefaultAdmin();
 }
 
-function ensureDefaultAdmin() {
+async function ensurePostgresSchema() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      role TEXT NOT NULL DEFAULT 'customer',
+      company TEXT DEFAULT '',
+      phone TEXT DEFAULT '',
+      delivery_address TEXT DEFAULT '',
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS orders (
+      id TEXT PRIMARY KEY,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      order_number TEXT UNIQUE NOT NULL,
+      status TEXT NOT NULL DEFAULT 'new',
+      customer JSONB NOT NULL,
+      items JSONB NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  await pool.query('CREATE INDEX IF NOT EXISTS orders_user_id_idx ON orders (user_id)');
+  await pool.query("CREATE INDEX IF NOT EXISTS orders_customer_email_idx ON orders (lower(customer->>'email'))");
+}
+
+async function migrateJsonToPostgresIfEmpty() {
+  if (!fs.existsSync(dbPath) || await countUsers()) return;
+
   const db = readDb();
-  if (db.users.length > 0) return;
+  if (!db.users.length && !db.orders.length) return;
+
+  for (const user of db.users) {
+    await createUser({
+      id: user.id || crypto.randomUUID(),
+      name: user.name || user.company || user.email || 'Customer',
+      email: String(user.email || '').toLowerCase(),
+      role: user.role || 'customer',
+      company: user.company || '',
+      phone: user.phone || '',
+      deliveryAddress: user.deliveryAddress || '',
+      passwordHash: user.passwordHash,
+      createdAt: user.createdAt || new Date().toISOString()
+    });
+  }
+
+  for (const order of db.orders) {
+    await createOrder({
+      id: order.id || crypto.randomUUID(),
+      userId: order.userId || null,
+      orderNumber: order.orderNumber || createOrderNumber(),
+      createdAt: order.createdAt || new Date().toISOString(),
+      status: order.status || 'new',
+      customer: order.customer || {},
+      items: Array.isArray(order.items) ? order.items : []
+    });
+  }
+
+  console.log(`Imported ${db.users.length} users and ${db.orders.length} orders from data/db.json into PostgreSQL.`);
+}
+
+async function ensureDefaultAdmin() {
+  if (await countUsers()) return;
 
   const email = process.env.ADMIN_EMAIL || 'jorgerensoraji@hotmail.com';
   const password = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : 'ChangeMe123!');
@@ -339,16 +411,18 @@ function ensureDefaultAdmin() {
     throw new Error('ADMIN_PASSWORD must be set before the first production start.');
   }
 
-  db.users.push({
+  await createUser({
     id: crypto.randomUUID(),
     name: 'Benito Admin',
     email,
     role: 'admin',
+    company: '',
+    phone: '',
+    deliveryAddress: '',
     passwordHash: hashPassword(password),
     createdAt: new Date().toISOString()
   });
 
-  writeDb(db);
   console.log(`Default admin created: ${email}`);
 }
 
@@ -358,6 +432,147 @@ function readDb() {
 
 function writeDb(db) {
   fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+}
+
+async function countUsers() {
+  if (pool) {
+    const result = await pool.query('SELECT COUNT(*)::int AS count FROM users');
+    return result.rows[0].count;
+  }
+
+  return readDb().users.length;
+}
+
+async function findUserByEmail(email) {
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (!cleanEmail) return null;
+
+  if (pool) {
+    const result = await pool.query('SELECT * FROM users WHERE lower(email) = $1 LIMIT 1', [cleanEmail]);
+    return result.rows[0] ? mapPostgresUser(result.rows[0]) : null;
+  }
+
+  return readDb().users.find((user) => String(user.email || '').toLowerCase() === cleanEmail) || null;
+}
+
+async function findUserById(id) {
+  if (!id) return null;
+
+  if (pool) {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1 LIMIT 1', [id]);
+    return result.rows[0] ? mapPostgresUser(result.rows[0]) : null;
+  }
+
+  return readDb().users.find((user) => user.id === id) || null;
+}
+
+async function createUser(user) {
+  if (pool) {
+    await pool.query(
+      `INSERT INTO users
+        (id, name, email, role, company, phone, delivery_address, password_hash, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [
+        user.id,
+        user.name,
+        user.email,
+        user.role || 'customer',
+        user.company || '',
+        user.phone || '',
+        user.deliveryAddress || '',
+        user.passwordHash,
+        user.createdAt
+      ]
+    );
+    return;
+  }
+
+  const db = readDb();
+  db.users.push(user);
+  writeDb(db);
+}
+
+async function createOrder(order) {
+  if (pool) {
+    await pool.query(
+      `INSERT INTO orders
+        (id, user_id, order_number, status, customer, items, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [
+        order.id,
+        order.userId,
+        order.orderNumber,
+        order.status,
+        JSON.stringify(order.customer),
+        JSON.stringify(order.items),
+        order.createdAt
+      ]
+    );
+    return;
+  }
+
+  const db = readDb();
+  db.orders.unshift(order);
+  writeDb(db);
+}
+
+async function listOrders() {
+  if (pool) {
+    const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC');
+    return result.rows.map(mapPostgresOrder);
+  }
+
+  return readDb().orders;
+}
+
+async function listOrdersForUser(user) {
+  if (pool) {
+    const result = await pool.query(
+      `SELECT * FROM orders
+       WHERE user_id = $1 OR lower(customer->>'email') = $2
+       ORDER BY created_at DESC`,
+      [user.id, String(user.email || '').toLowerCase()]
+    );
+    return result.rows.map(mapPostgresOrder);
+  }
+
+  const userEmail = user.email.toLowerCase();
+  return readDb().orders.filter((order) => {
+    const orderEmail = String(order.customer && order.customer.email || '').toLowerCase();
+    return order.userId === user.id || orderEmail === userEmail;
+  });
+}
+
+function mapPostgresUser(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    role: row.role,
+    company: row.company || '',
+    phone: row.phone || '',
+    deliveryAddress: row.delivery_address || '',
+    passwordHash: row.password_hash,
+    createdAt: toIsoString(row.created_at)
+  };
+}
+
+function mapPostgresOrder(row) {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    orderNumber: row.order_number,
+    createdAt: toIsoString(row.created_at),
+    status: row.status,
+    customer: row.customer || {},
+    items: row.items || []
+  };
+}
+
+function toIsoString(value) {
+  if (!value) return new Date().toISOString();
+  if (value instanceof Date) return value.toISOString();
+  return String(value);
 }
 
 function cleanupUpload(filePath) {
@@ -394,7 +609,7 @@ function setSessionCookie(res, token) {
   });
 }
 
-function getUserFromRequest(req) {
+async function getUserFromRequest(req) {
   const cookies = parseCookies(req.headers.cookie || '');
   const token = cookies[SESSION_COOKIE];
   const session = sessions.get(token);
@@ -405,8 +620,7 @@ function getUserFromRequest(req) {
     return null;
   }
 
-  const db = readDb();
-  return db.users.find((user) => user.id === session.userId) || null;
+  return findUserById(session.userId);
 }
 
 function parseCookies(cookieHeader) {
@@ -418,8 +632,8 @@ function parseCookies(cookieHeader) {
   }, {});
 }
 
-function requireAuth(req, res, next) {
-  const user = getUserFromRequest(req);
+async function requireAuth(req, res, next) {
+  const user = await getUserFromRequest(req);
   if (!user) return res.status(401).json({ success: false, message: 'Login required.' });
   req.user = user;
   next();
