@@ -202,7 +202,7 @@ app.post('/api/logout', (_req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/orders', async (req, res) => {
+app.post('/api/orders', (req, res) => {
   const user = getUserFromRequest(req);
   const order = normalizeOrder(req.body, user);
 
@@ -221,13 +221,15 @@ app.post('/api/orders', async (req, res) => {
   db.orders.unshift(order);
   writeDb(db);
 
-  try {
-    await sendOrderEmail(order);
-  } catch (error) {
-    console.error('Order email failed:', error);
-  }
-
   res.status(201).json({ success: true, orderNumber: order.orderNumber });
+
+  sendOrderEmail(order).catch((error) => {
+    console.error(`Order email failed for ${order.orderNumber}:`, {
+      code: error.code,
+      command: error.command,
+      message: error.message
+    });
+  });
 });
 
 app.get('/api/orders', requireAuth, requireRole('admin'), (_req, res) => {
@@ -412,11 +414,16 @@ async function sendOrderEmail(order) {
   }
 
   const transporter = nodemailer.createTransport({
-    service: process.env.SMTP_SERVICE || 'gmail',
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
-    }
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000
   });
 
   const recipients = [process.env.ORDER_EMAIL || process.env.SMTP_USER, order.customer.email];
