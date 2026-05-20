@@ -1195,3 +1195,44 @@ async function loadAdminCustomers() {
     if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="form-status error">Could not load customers.</td></tr>';
   }
 }
+
+// -----------------------
+// Lightweight reveal animations (no external deps)
+// -----------------------
+(function () {
+  try {
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    const selectors = [
+      '.hero-content',
+      '.hero-media',
+      '.product-card',
+      '.catalog-card',
+      '.section-heading',
+      '.order-band',
+      '.product-admin-card'
+    ];
+
+    document.querySelectorAll(selectors.join(',')).forEach((el) => {
+      // hero-media uses separate subtle class
+      if (el.classList.contains('hero-media')) el.classList.add('reveal-hero-media');
+      else if (el.classList.contains('hero-content')) el.classList.add('reveal', 'hero');
+      else el.classList.add('reveal');
+
+      observer.observe(el);
+    });
+  } catch (e) {
+    // fail silently — animations are progressive enhancement
+    console.error('Reveal init failed:', e);
+  }
+})();

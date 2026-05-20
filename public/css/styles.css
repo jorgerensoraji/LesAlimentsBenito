@@ -793,6 +793,64 @@ select:focus {
 .order-detail-inner dt {
   color: var(--muted);
   font-weight: 800;
+
+/* --- Lightweight reveal animations --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px) scale(0.995);
+  will-change: opacity, transform;
+  transition: opacity 520ms cubic-bezier(.2,.9,.2,1), transform 520ms cubic-bezier(.2,.9,.2,1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.reveal.hero {
+  transition-duration: 720ms;
+  transition-timing-function: cubic-bezier(.16,.9,.2,1);
+}
+
+.reveal-hero-media {
+  opacity: 0;
+  transform: translateY(6px) scale(1.02);
+  transition: opacity 820ms ease, transform 820ms ease;
+}
+.reveal-hero-media.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* subtle pulse for call-to-action to give a 'light robotic' feel */
+.cta-pulse {
+  position: relative;
+}
+.cta-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 8px 20px rgba(157,31,33,0.08);
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 360ms ease, transform 360ms ease;
+}
+.cta-pulse:hover::after,
+.cta-pulse.is-visible::after {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-hero-media,
+  .cta-pulse::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
 }
 
 .order-card dd,

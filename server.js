@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const crypto = require('crypto');
 const express = require('express');
 const fs = require('fs');
@@ -36,18 +38,28 @@ const port = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, 'public');
 const uploadsDir = path.join(__dirname, 'uploads');
 
+const isProduction = process.env.NODE_ENV === 'production';
 const SESSION_COOKIE = 'benito_session';
-const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
+const SESSION_TTL_MS = Number(process.env.SESSION_TTL_MS) || 1000 * 60 * 60 * 8;
 const sessions = new Map();
 
 const VALID_ORDER_STATUSES = ['new', 'processing', 'ready', 'delivered', 'cancelled'];
 const PRODUCT_CATEGORIES = ['Beef', 'Chicken', 'Pork', 'Lamb', 'Specialty', 'Grocery', 'Other'];
+const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png']);
+const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png']);
+const PDF_MIME_TYPE = 'application/pdf';
+const PDF_EXTENSIONS = new Set(['.pdf']);
+const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
+
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
 
 app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(express.static(publicDir));
 
-const upload = multer({ dest: uploadsDir });
+const upload = multer({ dest: uploadsDir, limits: { fileSize: MAX_UPLOAD_SIZE_BYTES } });
 
 // ── Page routes ───────────────────────────────────────────────────────────────
 
@@ -169,14 +181,18 @@ app.delete('/api/products/:id', requireAuth, requireRole('admin'), async (req, r
 
 app.post('/api/products/:id/image', requireAuth, requireRole('admin'), upload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'No image file provided.' });
+  if (!isAllowedImageFile(req.file)) {
+    cleanupUpload(req.file.path);
+    return res.status(400).json({ success: false, message: 'Only JPG and PNG image files are allowed.' });
+  }
 
   const product = await findProductById(req.params.id);
   if (!product) {
-    fs.unlink(req.file.path, () => {});
+    cleanupUpload(req.file.path);
     return res.status(404).json({ success: false, message: 'Product not found.' });
   }
 
-  const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+  const ext = getSafeExtension(req.file, '.jpg');
   const filename = `product-${req.params.id}${ext}`;
   const dest = path.join(publicDir, 'image', filename);
 
@@ -233,8 +249,12 @@ app.put('/api/admin/settings', requireAuth, requireRole('admin'), async (req, re
 
 app.post('/api/admin/logo', requireAuth, requireRole('admin'), upload.single('logo'), async (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'No logo file provided.' });
+  if (!isAllowedImageFile(req.file)) {
+    cleanupUpload(req.file.path);
+    return res.status(400).json({ success: false, message: 'Only JPG and PNG logo files are allowed.' });
+  }
 
-  const ext = path.extname(req.file.originalname).toLowerCase() || '.png';
+  const ext = getSafeExtension(req.file, '.png');
   const filename = `logo${ext}`;
   const dest = path.join(publicDir, 'image', filename);
 
@@ -284,6 +304,11 @@ app.post('/upload-pdf', upload.single('file'), async (req, res) => {
     return res.status(400).json({ success: false, message: 'No PDF file was received.' });
   }
 
+  if (!isAllowedPdfFile(req.file)) {
+    cleanupUpload(req.file.path);
+    return res.status(400).json({ success: false, message: 'Only PDF files are allowed.' });
+  }
+
   const filePath = req.file.path;
   const emailCliente = String(req.body.emailCliente || '').trim();
   const nombreCliente = String(req.body.nombreCliente || 'Not specified').trim();
@@ -327,10 +352,17 @@ app.post('/upload-pdf', upload.single('file'), async (req, res) => {
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
+validateProductionConfig();
+
 initStorage()
   .then(() => {
     app.listen(port, () => {
       console.log(`Les Aliments Benito running on http://localhost:${port}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Session cookie secure flag: ${isProduction}`);
+      if (isProduction) {
+        console.log('Production checks passed: secure mode enabled.');
+      }
     });
   })
   .catch((error) => {
@@ -357,7 +389,7 @@ function setSessionCookie(res, token) {
   res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProduction,
     maxAge: SESSION_TTL_MS
   });
 }
@@ -373,6 +405,7 @@ async function getUserFromRequest(req) {
     return null;
   }
 
+  session.expiresAt = Date.now() + SESSION_TTL_MS;
   return findUserById(session.userId);
 }
 
@@ -383,6 +416,37 @@ function parseCookies(cookieHeader) {
     acc[rawName] = decodeURIComponent(rawValue.join('='));
     return acc;
   }, {});
+}
+
+function isAllowedImageFile(file) {
+  const ext = path.extname(file.originalname || '').toLowerCase();
+  return IMAGE_MIME_TYPES.has(file.mimetype) && IMAGE_EXTENSIONS.has(ext);
+}
+
+function isAllowedPdfFile(file) {
+  const ext = path.extname(file.originalname || '').toLowerCase();
+  return file.mimetype === PDF_MIME_TYPE && PDF_EXTENSIONS.has(ext);
+}
+
+function getSafeExtension(file, defaultExt) {
+  const ext = path.extname(file.originalname || '').toLowerCase();
+  return ext || defaultExt;
+}
+
+function validateProductionConfig() {
+  if (!isProduction) return;
+
+  if (!process.env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD === 'ChangeMe123!') {
+    throw new Error('ADMIN_PASSWORD must be set and not use the default development password in production.');
+  }
+
+  if (!process.env.ADMIN_EMAIL) {
+    console.warn('Warning: ADMIN_EMAIL is not set. A default admin email will be used.');
+  }
+
+  if (process.env.SMTP_USER && !process.env.SMTP_PASS) {
+    console.warn('Warning: SMTP_USER is configured but SMTP_PASS is missing. Email may fail.');
+  }
 }
 
 async function requireAuth(req, res, next) {

@@ -17,16 +17,17 @@
   "author": "Les Aliments Benito",
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "form-data": "^4.0.2",
+    "dotenv": "^16.3.1",
+    "express": "^5.2.1",
     "multer": "^1.4.5-lts.2",
-    "node-fetch": "^2.7.0",
-    "nodemailer": "^7.0.3",
+    "nodemailer": "^8.0.4",
     "pg": "^8.21.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^3.1.14"
+  },
+  "overrides": {
+    "path-to-regexp": "^8.4.2"
   },
   "engines": {
     "node": ">=18.0.0"
