@@ -43,42 +43,48 @@
         <div id="productCatalog" class="catalog-grid"></div>
       </div>
 
-      <aside class="order-panel">
-        <h2 data-i18n="selectedTitle">Selected products</h2>
-        <div id="selectedItems" class="selected-list"></div>
+      <aside class="order-sidebar">
+        <!-- Card 1: selected products summary -->
+        <div class="order-panel order-panel--summary">
+          <h2 data-i18n="selectedTitle">Selected products</h2>
+          <div id="selectedItems" class="selected-list"></div>
+        </div>
 
-        <form id="orderForm" class="order-form" novalidate>
-          <label>
-            <span data-i18n="companyLabel">Company name</span>
-            <input name="company" type="text" required />
-          </label>
-          <label>
-            <span data-i18n="contactLabel">Contact name</span>
-            <input name="contact" type="text" />
-          </label>
-          <label>
-            <span data-i18n="emailLabel">Email</span>
-            <input name="email" type="email" required />
-          </label>
-          <label>
-            <span data-i18n="phoneLabel">Phone</span>
-            <input name="phone" type="tel" />
-          </label>
-          <label>
-            <span data-i18n="deliveryDateLabel">Delivery date</span>
-            <input name="deliveryDate" type="date" />
-          </label>
-          <label>
-            <span data-i18n="addressLabel">Delivery address</span>
-            <textarea name="deliveryAddress" rows="3"></textarea>
-          </label>
-          <label>
-            <span data-i18n="messageLabel">Additional message</span>
-            <textarea name="message" rows="3"></textarea>
-          </label>
-          <button class="button primary full" type="submit" data-i18n="sendOrder">Send order</button>
-          <p id="orderStatus" class="form-status" role="status"></p>
-        </form>
+        <!-- Card 2: customer information form -->
+        <div class="order-panel order-panel--form">
+          <form id="orderForm" class="order-form" novalidate>
+            <label>
+              <span data-i18n="companyLabel">Company name</span>
+              <input name="company" type="text" required />
+            </label>
+            <label>
+              <span data-i18n="contactLabel">Contact name</span>
+              <input name="contact" type="text" />
+            </label>
+            <label>
+              <span data-i18n="emailLabel">Email</span>
+              <input name="email" type="email" required />
+            </label>
+            <label>
+              <span data-i18n="phoneLabel">Phone</span>
+              <input name="phone" type="tel" />
+            </label>
+            <label>
+              <span data-i18n="deliveryDateLabel">Delivery date</span>
+              <input name="deliveryDate" type="date" />
+            </label>
+            <label>
+              <span data-i18n="addressLabel">Delivery address</span>
+              <textarea name="deliveryAddress" rows="3"></textarea>
+            </label>
+            <label>
+              <span data-i18n="messageLabel">Notes / Special instructions</span>
+              <textarea name="message" rows="2"></textarea>
+            </label>
+            <button class="button primary full" type="submit" data-i18n="sendOrder">Send order</button>
+            <p id="orderStatus" class="form-status" role="status"></p>
+          </form>
+        </div>
       </aside>
     </section>
   </main>

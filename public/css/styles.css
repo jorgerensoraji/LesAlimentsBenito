@@ -875,6 +875,15 @@ h2 { font-size: clamp(24px, 2.8vw, 42px); font-weight: 700; }
 
 .catalog-panel { min-width: 0; }
 
+.order-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  min-width: 0;
+}
+
 .toolbar {
   display: grid;
   grid-template-columns: 1fr 210px;
@@ -905,8 +914,6 @@ h2 { font-size: clamp(24px, 2.8vw, 42px); font-weight: 700; }
 }
 
 .order-panel {
-  position: sticky;
-  top: calc(var(--header-h) + 16px);
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -1569,8 +1576,8 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 1024px) {
-  .order-layout { grid-template-columns: 1fr; }
-  .order-panel  { position: static; }
+  .order-layout   { grid-template-columns: 1fr; }
+  .order-sidebar  { position: static; }
 }
 
 @media (max-width: 960px) {
@@ -1626,7 +1633,6 @@ input:focus, textarea:focus, select:focus {
   .admin-tabs  { padding: 0 16px; }
   .order-shell { padding-left: 16px; padding-right: 16px; }
   .order-panel { padding: 16px; }
-  .selected-list { max-height: 200px; }
 
   .product-grid,
   .catalog-grid,
