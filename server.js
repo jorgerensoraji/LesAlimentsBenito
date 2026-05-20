@@ -484,6 +484,7 @@ async function normalizeOrder(payload, user) {
   const cleanItems = items
     .map((item) => ({
       productId: String(item.productId || ''),
+      sku: String(item.sku || '').trim(),
       name: String(item.name || '').trim(),
       nameFr: String(item.nameFr || '').trim(),
       quantity: Number(item.quantity || 0),

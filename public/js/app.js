@@ -391,7 +391,7 @@ function addProduct(productId) {
 
   if (!product || quantity <= 0) return;
 
-  selectedItems.push({ productId: product.id, name: product.name, nameFr: product.nameFr, quantity, unit, notes });
+  selectedItems.push({ productId: product.id, sku: product.sku || '', name: product.name, nameFr: product.nameFr, quantity, unit, notes });
   document.getElementById(`qty-${productId}`).value = '';
   document.getElementById(`notes-${productId}`).value = '';
   renderSelectedItems();
