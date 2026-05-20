@@ -1,25 +1,25 @@
 /* Les Aliments Benito - professional interface styles */
 
 :root {
-  --ink: #171411;
-  --ink-2: #2d2925;
-  --muted: #716a63;
-  --soft: #f6f3ef;
-  --paper: #fbfaf8;
+  --ink: #1e1812;
+  --ink-2: #3f362d;
+  --muted: #7a6c5f;
+  --soft: #f7f2eb;
+  --paper: #fcf7f2;
   --white: #ffffff;
-  --line: #e4ded6;
-  --border: #d8d0c7;
-  --red: #9d1f21;
-  --red-dark: #741516;
-  --gold: #c8952f;
-  --green: #2f5b45;
-  --blue: #1f4f78;
-  --danger: #b42318;
-  --shadow-xs: 0 1px 2px rgba(23, 20, 17, 0.06);
-  --shadow-sm: 0 8px 20px rgba(23, 20, 17, 0.08);
-  --shadow-md: 0 18px 42px rgba(23, 20, 17, 0.12);
-  --radius: 8px;
-  --radius-lg: 12px;
+  --line: #dfd4c8;
+  --border: #c9bdae;
+  --red: #b22a2f;
+  --red-dark: #7f1c1f;
+  --gold: #d5a85b;
+  --green: #3f5a4a;
+  --blue: #2b4d71;
+  --danger: #a61e21;
+  --shadow-xs: 0 1px 2px rgba(30, 24, 18, 0.08);
+  --shadow-sm: 0 10px 24px rgba(30, 24, 18, 0.12);
+  --shadow-md: 0 20px 48px rgba(30, 24, 18, 0.16);
+  --radius: 10px;
+  --radius-lg: 16px;
   --header-h: 76px;
   --content: 1180px;
 }
@@ -188,14 +188,14 @@ h3 {
   font-size: 14px;
   font-weight: 800;
   text-decoration: none;
-  box-shadow: 0 8px 18px rgba(157, 31, 33, 0.18);
+  box-shadow: 0 8px 18px rgba(178, 42, 47, 0.18);
   transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
 }
 
 .nav-action:hover {
   background: var(--red-dark);
   transform: translateY(-1px);
-  box-shadow: 0 12px 26px rgba(157, 31, 33, 0.24);
+  box-shadow: 0 12px 26px rgba(178, 42, 47, 0.24);
 }
 
 .language-toggle {
@@ -224,19 +224,19 @@ h3 {
   background: var(--red);
   border-color: var(--red);
   color: var(--white);
-  box-shadow: 0 10px 24px rgba(157, 31, 33, 0.2);
+  box-shadow: 0 10px 24px rgba(178, 42, 47, 0.22);
 }
 
 .button.primary:hover {
   background: var(--red-dark);
   border-color: var(--red-dark);
   transform: translateY(-1px);
-  box-shadow: 0 14px 30px rgba(157, 31, 33, 0.26);
+  box-shadow: 0 14px 30px rgba(178, 42, 47, 0.24);
 }
 
 .button.secondary {
-  background: var(--white);
-  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(255,255,255,0.8);
   color: var(--ink);
 }
 
@@ -302,7 +302,19 @@ h3 {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.6) 100%);
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.22) 50%, rgba(0,0,0,0.58) 100%);
+}
+
+.hero-image-stack {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  z-index: 2;
 }
 
 .hero-content {
@@ -314,7 +326,7 @@ h3 {
 }
 
 .hero-content .eyebrow {
-  color: #f7c561;
+  color: var(--gold);
   letter-spacing: 0.12em;
 }
 
@@ -489,7 +501,7 @@ h3 {
 }
 
 .order-spotlight {
-  background: linear-gradient(135deg, #1f1a18 0%, #3a2f2b 100%);
+  background: linear-gradient(135deg, #291814 0%, #461f1a 60%, #2d1510 100%);
   color: var(--white);
   overflow: hidden;
 }
@@ -507,7 +519,7 @@ h3 {
 }
 
 .order-spotlight .eyebrow {
-  color: #f0c56f;
+  color: var(--gold);
 }
 
 .order-spotlight h2 {
@@ -617,7 +629,7 @@ h3 {
 .preview-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 32px 58px rgba(23, 20, 17, 0.18);
-  border-color: rgba(157, 31, 33, 0.18);
+  border-color: rgba(178, 42, 47, 0.18);
 }
 
 .preview-card img {
@@ -813,12 +825,12 @@ h3 {
 }
 
 .order-band {
-  background: linear-gradient(135deg, #181411 0%, #2a211b 56%, #3a211f 100%);
+  background: linear-gradient(135deg, #291b16 0%, #3c271f 56%, #241409 100%);
   color: var(--white);
 }
 
 .order-band .eyebrow {
-  color: #f0c56f;
+  color: var(--gold);
 }
 
 .order-band h2 {
@@ -830,12 +842,12 @@ h3 {
   background: var(--gold);
   border-color: var(--gold);
   color: var(--ink);
-  box-shadow: 0 12px 28px rgba(200, 149, 47, 0.22);
+  box-shadow: 0 12px 28px rgba(213, 168, 91, 0.22);
 }
 
 .order-band .button.primary:hover {
-  background: #b68023;
-  border-color: #b68023;
+  background: #b68b33;
+  border-color: #b68b33;
 }
 
 .info-grid {
@@ -924,7 +936,7 @@ input:focus,
 textarea:focus,
 select:focus {
   border-color: var(--red);
-  box-shadow: 0 0 0 3px rgba(157, 31, 33, 0.1);
+  box-shadow: 0 0 0 3px rgba(178, 42, 47, 0.1);
 }
 
 .catalog-card-body {
@@ -1390,7 +1402,7 @@ select:focus {
 }
 
 .stat-card.accent {
-  border-color: rgba(157, 31, 33, 0.24);
+  border-color: rgba(178, 42, 47, 0.24);
   background: linear-gradient(180deg, #fff, #fff7f7);
 }
 
