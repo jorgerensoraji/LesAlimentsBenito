@@ -1197,6 +1197,25 @@ async function loadAdminCustomers() {
 }
 
 // -----------------------
+// Hero parallax (background moves at 35% of scroll speed → depth illusion)
+// -----------------------
+(function () {
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+  const img = document.querySelector('.hero-bg img');
+  if (!img) return;
+  let pending = false;
+  window.addEventListener('scroll', () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      img.style.transform = `translateY(${window.scrollY * 0.35}px)`;
+      pending = false;
+    });
+  }, { passive: true });
+})();
+
+// -----------------------
 // Lightweight reveal animations (no external deps)
 // -----------------------
 (function () {
