@@ -504,6 +504,7 @@ async function normalizeOrder(payload, user) {
       email: String(payload.email || (user && user.email) || '').trim(),
       phone: String(payload.phone || (user && user.phone) || '').trim(),
       deliveryAddress: String(payload.deliveryAddress || (user && user.deliveryAddress) || '').trim(),
+      deliveryDate: String(payload.deliveryDate || '').trim(),
       message: String(payload.message || '').trim()
     },
     items: cleanItems

@@ -47,8 +47,9 @@ const translations = {
     contactLabel: 'Contact name',
     emailLabel: 'Email',
     phoneLabel: 'Phone',
+    deliveryDateLabel: 'Delivery date',
     addressLabel: 'Delivery address',
-    messageLabel: 'Additional message',
+    messageLabel: 'Notes / Special instructions',
     sendOrder: 'Send order',
     addProduct: 'Add',
     quantity: 'Quantity',
@@ -128,8 +129,9 @@ const translations = {
     contactLabel: 'Nom du contact',
     emailLabel: 'Courriel',
     phoneLabel: 'Telephone',
+    deliveryDateLabel: 'Date de livraison',
     addressLabel: 'Adresse de livraison',
-    messageLabel: 'Message additionnel',
+    messageLabel: 'Notes / Instructions speciales',
     sendOrder: 'Envoyer la commande',
     addProduct: 'Ajouter',
     quantity: 'Quantite',
@@ -812,8 +814,9 @@ function renderOrdersTable(orders) {
               <dl>
                 <dt>Contact</dt><dd>${order.customer && order.customer.contact || '—'}</dd>
                 <dt>Phone</dt><dd>${order.customer && order.customer.phone || '—'}</dd>
+                <dt>Delivery date</dt><dd>${order.customer && order.customer.deliveryDate || '—'}</dd>
                 <dt>Address</dt><dd>${order.customer && order.customer.deliveryAddress || '—'}</dd>
-                <dt>Note</dt><dd>${order.customer && order.customer.message || '—'}</dd>
+                <dt>Notes</dt><dd>${order.customer && order.customer.message || '—'}</dd>
               </dl>
             </div>
             <div>
