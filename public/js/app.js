@@ -196,7 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
 async function applySettingsLogo() {
   try {
     const s = await fetch('/api/settings').then((r) => r.json());
-    if (s && s.logoPath) updateHeaderLogo(s.logoPath);
+    if (!s) return;
+    if (s.logoPath) updateHeaderLogo(s.logoPath);
+    document.querySelectorAll('[data-setting]').forEach((el) => {
+      const val = s[el.dataset.setting];
+      if (val) el.textContent = val;
+    });
   } catch (_) {}
 }
 
