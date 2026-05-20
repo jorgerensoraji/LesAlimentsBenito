@@ -3,251 +3,312 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Les Aliments Benito</title>
+  <title>Les Aliments Benito — Wholesale Meat Supplier, Montreal</title>
+  <meta name="description" content="B2B wholesale meat supplier serving restaurants, caterers, and food businesses in the Montreal area. Beef, chicken, pork, lamb, and specialty products." />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
   <header class="site-header">
     <a class="brand" href="/">
-      <img src="/image/beni.png" alt="Les Aliments Benito logo" />
-      <span>Les Aliments Benito</span>
+      <img src="/image/beni.png" alt="Les Aliments Benito" />
+      <div class="brand-name">
+        <strong>Les Aliments Benito</strong>
+        <span>Wholesale Meat Supplier</span>
+      </div>
     </a>
     <nav class="site-nav" aria-label="Primary navigation">
-      <a href="#products" data-i18n="navProducts">Products</a>
-      <a href="#location" data-i18n="navLocation">Location</a>
+      <a href="#categories" data-i18n="navProducts">Products</a>
+      <a href="#contact"    data-i18n="navLocation">Location</a>
       <a href="/order" class="nav-action" data-i18n="navOrder">Place your order</a>
       <a href="/signup" style="display:none" data-auth="guest" data-i18n="navSignup">Create account</a>
-      <a href="/login" style="display:none" data-auth="guest" data-i18n="navLogin">Login</a>
+      <a href="/login"  style="display:none" data-auth="guest" data-i18n="navLogin">Login</a>
       <a href="/account" style="display:none" data-auth="customer" data-i18n="navAccount">My account</a>
-      <a href="/admin" style="display:none" data-auth="admin">Admin</a>
+      <a href="/admin"   style="display:none" data-auth="admin">Admin</a>
       <button class="text-button" style="display:none" data-auth="auth" type="button" data-i18n="logoutButton">Logout</button>
       <button class="language-toggle" type="button" data-language-toggle>FR</button>
     </nav>
   </header>
 
   <main>
+
+    <!-- ── Hero ──────────────────────────────────────────────────────────── -->
     <section class="hero">
-      <div class="hero-media">
-        <img src="/image/ribAAA.jpg" alt="Premium meat cuts prepared for wholesale orders" />
-        <div class="hero-image-stack">
-          <a class="mini-card" href="/order?category=Beef" aria-label="Order beef cuts">
-            <img src="/image/shawarmab.jpg" alt="Beef shawarma preview" />
-            <span>Beef cuts</span>
-          </a>
-          <a class="mini-card" href="/order?category=Chicken" aria-label="Order chicken wings">
-            <img src="/image/wholechickenwings.jpg" alt="Chicken wings preview" />
-            <span>Poultry cases</span>
-          </a>
-          <a class="mini-card" href="/order?category=Pork" aria-label="Order pork selections">
-            <img src="/image/porkbuttsliced.jpg" alt="Pork butt preview" />
-            <span>Pork selections</span>
-          </a>
-        </div>
+      <div class="hero-bg">
+        <img src="/image/ribAAA.jpg" alt="Premium AAA beef cuts prepared for wholesale orders" />
       </div>
       <div class="hero-content">
         <p class="eyebrow" data-i18n="heroEyebrow">Wholesale meat supplier</p>
         <h1 data-i18n="heroTitle">Fresh meat products for restaurants, markets, and food businesses.</h1>
-        <p data-i18n="heroText">Les Aliments Benito supplies reliable beef, chicken, pork, lamb, specialty products, and kitchen essentials for professional buyers.</p>
-        <div class="hero-badges">
-          <span>24h food-service delivery</span>
-          <span>Commercial-grade cold chain</span>
-        </div>
+        <p class="hero-lead" data-i18n="heroText">Les Aliments Benito supplies reliable beef, chicken, pork, lamb, specialty products, and kitchen essentials for professional buyers.</p>
         <div class="hero-actions">
           <a class="button primary" href="/order" data-i18n="heroOrder">Place your order</a>
           <a class="button secondary" href="#contact" data-i18n="heroContact">Contact us</a>
         </div>
+        <div class="hero-divider"></div>
+        <div class="hero-trust">
+          <span class="trust-item">24–48 h turnaround</span>
+          <span class="trust-item">Cold-chain certified</span>
+          <span class="trust-item">B2B wholesale only</span>
+          <span class="trust-item">Bilingual service</span>
+        </div>
       </div>
     </section>
 
-    <section class="section hero-preview">
-      <div class="hero-preview-intro">
-        <p class="eyebrow">Featured cuts</p>
-        <h2>Selected wholesale products for fast ordering.</h2>
+    <!-- ── Stats strip ────────────────────────────────────────────────────── -->
+    <div class="stats-strip">
+      <div class="stats-inner">
+        <div class="stat-strip-item">
+          <strong>14+</strong>
+          <span>Product lines</span>
+        </div>
+        <div class="stat-strip-item">
+          <strong>5</strong>
+          <span>Meat categories</span>
+        </div>
+        <div class="stat-strip-item">
+          <strong>MTL</strong>
+          <span>Area delivery</span>
+        </div>
+        <div class="stat-strip-item">
+          <strong>B2B</strong>
+          <span>Wholesale only</span>
+        </div>
       </div>
-      <div class="preview-grid">
-        <a class="preview-card" href="/order?category=Beef" aria-label="Order premium beef cuts">
-          <img src="/image/shawarmab.jpg" alt="Premium beef plate" />
-          <div class="preview-card-body">
-            <span class="price-tag">$24</span>
-            <strong>Beef Shawarma</strong>
-            <p>Reliable wholesale beef for restaurants.</p>
-          </div>
-        </a>
-        <a class="preview-card" href="/order?category=Chicken" aria-label="Order premium chicken cuts">
-          <img src="/image/wholechickenwings.jpg" alt="Fresh chicken wings" />
-          <div class="preview-card-body">
-            <span class="price-tag">$18</span>
-            <strong>Chicken Wings</strong>
-            <p>Fresh poultry prepared for busy kitchens.</p>
-          </div>
-        </a>
-        <a class="preview-card" href="/order?category=Pork" aria-label="Order premium pork cuts">
-          <img src="/image/porkbuttsliced.jpg" alt="Sliced pork butt" />
-          <div class="preview-card-body">
-            <span class="price-tag">$22</span>
-            <strong>Pork Butt</strong>
-            <p>Consistent pork cuts for production menus.</p>
-          </div>
-        </a>
-        <a class="preview-card" href="/order?category=Lamb" aria-label="Order premium lamb cuts">
-          <img src="/image/lamblegbnlessaus.jpg" alt="Boneless lamb leg" />
-          <div class="preview-card-body">
-            <span class="price-tag">$32</span>
-            <strong>Lamb Leg</strong>
-            <p>Premium lamb for professional kitchens.</p>
-          </div>
-        </a>
-        <a class="preview-card" href="/order?category=Beef" aria-label="Order premium beef selection">
-          <img src="/image/shawarmab.jpg" alt="Beef arranged for wholesale" />
-          <div class="preview-card-body">
-            <span class="price-tag">$26</span>
-            <strong>Premium Beef Box</strong>
-            <p>Bulk beef cuts for busy kitchens.</p>
-          </div>
-        </a>
-        <a class="preview-card" href="/order?category=Chicken" aria-label="Order premium chicken selection">
-          <img src="/image/wholechickenwings.jpg" alt="Chicken wings packaged" />
-          <div class="preview-card-body">
-            <span class="price-tag">$19</span>
-            <strong>Chicken Case</strong>
-            <p>Wholesale poultry packs for service teams.</p>
-          </div>
-        </a>
+    </div>
+
+    <!-- ── Categories ────────────────────────────────────────────────────── -->
+    <section class="section categories-section" id="categories">
+      <div class="section-inner">
+        <div class="section-header">
+          <p class="eyebrow" data-i18n="productsEyebrow">Product families</p>
+          <h2 data-i18n="productsTitle">Meat, poultry, lamb, pork, specialty, and grocery items.</h2>
+        </div>
+        <div class="categories-grid">
+          <a class="category-card" href="/order?category=Beef" aria-label="Order beef cuts">
+            <img src="/image/insideround.jpg" alt="Beef cuts" />
+            <div class="category-label">
+              <strong data-i18n="beefTitle">Beef</strong>
+              <span data-i18n="beefText">Quality cuts for shawarma, kitchens, and wholesale service.</span>
+            </div>
+          </a>
+          <a class="category-card" href="/order?category=Chicken" aria-label="Order chicken">
+            <img src="/image/chickenbreastbnless.jpg" alt="Chicken products" />
+            <div class="category-label">
+              <strong data-i18n="chickenTitle">Chicken</strong>
+              <span data-i18n="chickenText">Breasts, wings, cubes, and fresh poultry formats.</span>
+            </div>
+          </a>
+          <a class="category-card" href="/order?category=Pork" aria-label="Order pork">
+            <img src="/image/porklegwithbone.jpg" alt="Pork products" />
+            <div class="category-label">
+              <strong data-i18n="porkTitle">Pork</strong>
+              <span data-i18n="porkText">Practical pork cuts for production and prepared menus.</span>
+            </div>
+          </a>
+          <a class="category-card" href="/order?category=Lamb" aria-label="Order lamb">
+            <img src="/image/wholelambmf.jpg" alt="Lamb products" />
+            <div class="category-label">
+              <strong data-i18n="lambTitle">Lamb</strong>
+              <span data-i18n="lambText">Premium lamb products for professional kitchens.</span>
+            </div>
+          </a>
+          <a class="category-card" href="/order?category=Specialty" aria-label="Order specialty items">
+            <img src="/image/LOUKANIKO.jpg" alt="Specialty and grocery products" />
+            <div class="category-label">
+              <strong>Specialty</strong>
+              <span>Sausages, grocery staples, and kitchen essentials.</span>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
-    <section class="section order-spotlight">
-      <div class="spotlight-content">
-        <p class="eyebrow">Order-ready solutions</p>
-        <h2>Fast, reliable wholesale ordering for your kitchen.</h2>
-        <p>Choose from curated packages and express delivery options designed for restaurants, caterers, and grocery partners.</p>
-        <a class="button primary" href="/order" data-i18n="heroOrder">Place your order</a>
-      </div>
-      <div class="spotlight-grid">
-        <article class="spotlight-card">
-          <img src="/image/shawarmab.jpg" alt="Beef package" />
-          <div>
-            <strong>Chef’s selection</strong>
-            <p>Quality beef batches ready for service.</p>
+    <!-- ── How it works ───────────────────────────────────────────────────── -->
+    <section class="section process-section">
+      <div class="section-inner">
+        <div class="section-header centered">
+          <p class="eyebrow">How to order</p>
+          <h2>Simple, fast, and built for busy kitchens.</h2>
+          <p>No phone tag. Browse the catalog, build your order, and send it directly to our team.</p>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-num">01</div>
+            <h3>Browse the catalog</h3>
+            <p>Search by category — beef, chicken, pork, lamb, specialty, or grocery items.</p>
           </div>
-        </article>
-        <article class="spotlight-card">
-          <img src="/image/wholechickenwings.jpg" alt="Chicken pallets" />
-          <div>
-            <strong>Poultry cases</strong>
-            <p>Fresh chicken portions in convenient wholesale packs.</p>
+          <div class="process-step">
+            <div class="step-num">02</div>
+            <h3>Select products</h3>
+            <p>Add quantities, units, and notes for cuts, packaging, or special requirements.</p>
           </div>
-        </article>
-        <article class="spotlight-card">
-          <img src="/image/porkbuttsliced.jpg" alt="Pork selection" />
-          <div>
-            <strong>Pork bundles</strong>
-            <p>Consistent inventory for busy production menus.</p>
+          <div class="process-step">
+            <div class="step-num">03</div>
+            <h3>Submit your order</h3>
+            <p>Fill in your contact details and send. You receive an order confirmation by email.</p>
           </div>
-        </article>
+          <div class="process-step">
+            <div class="step-num">04</div>
+            <h3>We handle the rest</h3>
+            <p>Our team prepares your order and confirms pickup or delivery within 24–48 hours.</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section strengths">
-      <div class="strengths-body">
-        <p class="eyebrow">Trusted by chefs</p>
-        <h2>Wholesale meat supply built for busy kitchens and stores.</h2>
-        <p>Order family cuts, premium portions, and specialty items with consistent availability, bilingual service, and fast response.</p>
-        <div class="strength-grid">
-          <div class="strength-card">
+    <!-- ── Featured products ──────────────────────────────────────────────── -->
+    <section class="section products-section">
+      <div class="section-inner">
+        <div class="section-header centered">
+          <p class="eyebrow">Featured products</p>
+          <h2>Quality wholesale cuts, ready to order.</h2>
+          <p>A selection of our most requested products. All items are available through the order form.</p>
+        </div>
+        <div class="product-grid">
+          <a class="product-card" href="/order?category=Beef" aria-label="Order shawarma beef">
+            <img src="/image/shawarmab.jpg" alt="Shawarma beef cuts" />
+            <div class="product-card-body">
+              <span class="category-tag">Beef</span>
+              <h3>Shawarma Beef</h3>
+              <p>Quality cuts prepared for restaurants, caterers, and wholesale kitchens.</p>
+            </div>
+          </a>
+          <a class="product-card" href="/order?category=Beef" aria-label="Order inside round">
+            <img src="/image/insideround.jpg" alt="Inside round beef" />
+            <div class="product-card-body">
+              <span class="category-tag">Beef</span>
+              <h3>Inside Round</h3>
+              <p>Lean and versatile beef cut for roasting, slicing, and wholesale use.</p>
+            </div>
+          </a>
+          <a class="product-card" href="/order?category=Chicken" aria-label="Order chicken wings">
+            <img src="/image/wholechickenwings.jpg" alt="Whole chicken wings" />
+            <div class="product-card-body">
+              <span class="category-tag">Chicken</span>
+              <h3>Whole Chicken Wings</h3>
+              <p>Fresh wings with consistent sizing for bulk orders and busy kitchens.</p>
+            </div>
+          </a>
+          <a class="product-card" href="/order?category=Chicken" aria-label="Order chicken breast">
+            <img src="/image/chickenbreastbnlesswithskin.jpg" alt="Chicken breast" />
+            <div class="product-card-body">
+              <span class="category-tag">Chicken</span>
+              <h3>Boneless Chicken Breast</h3>
+              <p>Fresh poultry packed for dependable food-service use.</p>
+            </div>
+          </a>
+          <a class="product-card" href="/order?category=Pork" aria-label="Order pork butt">
+            <img src="/image/porkbuttsliced.jpg" alt="Pork butt sliced" />
+            <div class="product-card-body">
+              <span class="category-tag">Pork</span>
+              <h3>Pork Butt Sliced</h3>
+              <p>Reliable pork cuts for restaurants and prepared-food producers.</p>
+            </div>
+          </a>
+          <a class="product-card" href="/order?category=Lamb" aria-label="Order lamb leg">
+            <img src="/image/lamblegbnlessaus.jpg" alt="Boneless lamb leg" />
+            <div class="product-card-body">
+              <span class="category-tag">Lamb</span>
+              <h3>Boneless Lamb Leg</h3>
+              <p>Premium lamb prepared for wholesale and food-service needs.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── About / Strengths ──────────────────────────────────────────────── -->
+    <section class="split-section" id="about">
+      <div class="split-img">
+        <img src="/image/ribAAA.jpg" alt="Premium AAA rib wholesale cuts" />
+      </div>
+      <div class="split-body">
+        <p class="eyebrow" data-i18n="aboutEyebrow">Built for food service</p>
+        <h2 data-i18n="aboutTitle">Dependable supply, clear ordering, and bilingual service.</h2>
+        <p data-i18n="aboutText">We help restaurants, caterers, grocery counters, and production kitchens order the products they need with less back-and-forth.</p>
+        <div class="strengths-list">
+          <div class="strength-item">
             <strong>Fast turnarounds</strong>
             <p>Orders ready for pickup or delivery within 24–48 hours.</p>
           </div>
-          <div class="strength-card">
+          <div class="strength-item">
             <strong>Custom cuts</strong>
-            <p>Special sizing, portioning, and packaging made for your menu.</p>
+            <p>Special sizing, portioning, and packaging for your menu.</p>
           </div>
-          <div class="strength-card">
-            <strong>Food safe handling</strong>
-            <p>Cold chain logistics with certified storage and loading.</p>
+          <div class="strength-item">
+            <strong>Food-safe handling</strong>
+            <p>Cold-chain logistics with certified storage and loading.</p>
           </div>
-          <div class="strength-card">
-            <strong>Consistent inventory</strong>
-            <p>Reliable stock for restaurants, grocers, and catering partners.</p>
+          <div class="strength-item">
+            <strong>Consistent stock</strong>
+            <p>Reliable inventory for restaurants, grocers, and catering partners.</p>
           </div>
-        </div>
-      </div>
-      <div class="strengths-media">
-        <div class="media-tile">
-          <img src="/image/lamblegbnlessaus.jpg" alt="Boneless lamb leg" />
-          <span>Lamb premium</span>
-        </div>
-        <div class="media-tile">
-          <img src="/image/shawarmab.jpg" alt="Beef shawarma cuts" />
-          <span>Ready-to-ship beef</span>
         </div>
       </div>
     </section>
 
-    <section class="section intro">
-      <div>
-        <p class="eyebrow" data-i18n="aboutEyebrow">Built for food service</p>
-        <h2 data-i18n="aboutTitle">Dependable supply, clear ordering, and bilingual service.</h2>
-      </div>
-      <p data-i18n="aboutText">We help restaurants, caterers, grocery counters, and production kitchens order the products they need with less back-and-forth.</p>
-    </section>
-
-    <section class="section products-section" id="products">
-      <div class="section-heading">
-        <p class="eyebrow" data-i18n="productsEyebrow">Product families</p>
-        <h2 data-i18n="productsTitle">Meat, poultry, lamb, pork, specialty, and grocery items.</h2>
-      </div>
-      <div class="product-grid">
-        <a class="product-card" href="/order?category=Beef" aria-label="View all Beef products">
-          <img src="/image/shawarmab.jpg" alt="Beef shawarma cuts" />
-          <h3 data-i18n="beefTitle">Beef</h3>
-          <p data-i18n="beefText">Quality cuts for shawarma, kitchens, and wholesale service.</p>
-        </a>
-        <a class="product-card" href="/order?category=Chicken" aria-label="View all Chicken products">
-          <img src="/image/wholechickenwings.jpg" alt="Fresh chicken wings" />
-          <h3 data-i18n="chickenTitle">Chicken</h3>
-          <p data-i18n="chickenText">Breasts, wings, cubes, and fresh poultry formats.</p>
-        </a>
-        <a class="product-card" href="/order?category=Pork" aria-label="View all Pork products">
-          <img src="/image/porkbuttsliced.jpg" alt="Sliced pork butt" />
-          <h3 data-i18n="porkTitle">Pork</h3>
-          <p data-i18n="porkText">Practical pork cuts for production and prepared menus.</p>
-        </a>
-        <a class="product-card" href="/order?category=Lamb" aria-label="View all Lamb products">
-          <img src="/image/lamblegbnlessaus.jpg" alt="Boneless lamb leg" />
-          <h3 data-i18n="lambTitle">Lamb</h3>
-          <p data-i18n="lambText">Premium lamb products for professional kitchens.</p>
-        </a>
-      </div>
-    </section>
-
-    <section class="section order-band">
-      <div>
+    <!-- ── CTA band ───────────────────────────────────────────────────────── -->
+    <div class="cta-band">
+      <div class="cta-band-body">
         <p class="eyebrow" data-i18n="orderEyebrow">Fast order request</p>
         <h2 data-i18n="orderTitle">Build your order online and send it directly to our team.</h2>
+        <p>Select products, quantities, and delivery details. We confirm within 24 hours.</p>
       </div>
-      <a class="button primary" href="/order" data-i18n="orderButton">Open order page</a>
+      <a class="button gold" href="/order" data-i18n="orderButton">Open order page</a>
+    </div>
+
+    <!-- ── Contact / Location ─────────────────────────────────────────────── -->
+    <section class="contact-section" id="contact">
+      <div class="contact-inner">
+        <div class="contact-body">
+          <p class="eyebrow" data-i18n="locationEyebrow">Location</p>
+          <h2 data-i18n="locationTitle">Serving professional food buyers in the Montreal area.</h2>
+          <p data-i18n="locationText">Add your delivery address when placing an order and our team will confirm the details.</p>
+          <p data-i18n="contactText">Need a custom product or special quantity? Include your notes in the order form — cuts, packing, delivery, and substitutions.</p>
+        </div>
+        <div class="contact-details">
+          <div class="contact-detail">
+            <div class="contact-icon">📍</div>
+            <div class="contact-text">
+              <strong>Address</strong>
+              <span>11525, 4ième Avenue, R.D.P., QC H1E 2Y8</span>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-icon">📞</div>
+            <div class="contact-text">
+              <strong>Phone</strong>
+              <span>(514) 723-2378</span>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-icon">📠</div>
+            <div class="contact-text">
+              <strong>Fax</strong>
+              <span>(514) 723-3231</span>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-icon">📦</div>
+            <div class="contact-text">
+              <strong>Orders</strong>
+              <span>Place your order online — we respond within 24 hours.</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="section info-grid" id="location">
-      <div>
-        <p class="eyebrow" data-i18n="locationEyebrow">Location</p>
-        <h2 data-i18n="locationTitle">Serving professional food buyers in the Montreal area.</h2>
-        <p data-i18n="locationText">Phone: 514 723 2378. Add your delivery address when placing an order and our team will confirm the details.</p>
-      </div>
-      <div id="contact">
-        <p class="eyebrow" data-i18n="contactEyebrow">Contact</p>
-        <h2 data-i18n="contactTitle">Need a custom product or special quantity?</h2>
-        <p data-i18n="contactText">Send the details through the order form. You can include notes for cuts, packing, delivery, and substitutions.</p>
-      </div>
-    </section>
   </main>
 
+  <!-- ── Footer ────────────────────────────────────────────────────────────── -->
   <footer class="site-footer">
-    <span>© 2026 Les Aliments Benito</span>
+    <span>© 2026 Les Aliments Benito — 1241 5801 Canada Inc.</span>
     <a href="/admin" data-i18n="footerAdmin">Admin</a>
   </footer>
 
-  <script src="/js/app.js?v=20260519-5" defer></script>
+  <script src="/js/app.js?v=20260520-1" defer></script>
 </body>
 </html>
