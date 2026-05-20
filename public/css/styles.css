@@ -1523,6 +1523,20 @@ input:focus, textarea:focus, select:focus {
   font-weight: 700;
 }
 
+/* ── Hero Ken Burns animation ─────────────────────────────────────────────── */
+
+@keyframes heroDrift {
+  0%   { transform: scale(1.00) translate(0%,    0%); }
+  33%  { transform: scale(1.06) translate(-1.2%, 0.4%); }
+  66%  { transform: scale(1.09) translate(-0.4%, -0.8%); }
+  100% { transform: scale(1.00) translate(0%,    0%); }
+}
+
+.hero-bg {
+  animation: heroDrift 22s ease-in-out infinite;
+  transform-origin: center center;
+}
+
 /* ── Scroll reveal ────────────────────────────────────────────────────────── */
 
 .reveal {
@@ -1535,6 +1549,7 @@ input:focus, textarea:focus, select:focus {
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { transition: none !important; animation: none !important; }
+  .hero-bg { animation: none !important; }
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
